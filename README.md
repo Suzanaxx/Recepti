@@ -44,21 +44,22 @@ Vsebuje datoteke frontend-a, ki jih upravlja Node.js.
 1. Pojdite v mapo `Backend`.
 2. Nastavite MySQL poverilnice v `application.properties`.
 3. Zaženite aplikacijo:
-   ```bash
-   mvn spring-boot:run
+   
+   `mvn spring-boot:run`
 
 ### Namestitev Frontend-a  
 Pojdite v mapo `Frontend`.  
 Namestite odvisnosti:  
-```bash
-npm install
+
+`npm install`
 
 Zaženite frontend strežnik:
-bash
-npm start
+    `npm start`
+
 ### Nastavitev baze podatkov
 Ustvarite MySQL bazo za aplikacijo.
-Zaženite SQL ukaze iz data.sql za nastavitev začetne sheme in podatkov.
+Zaženite SQL ukaze iz data.sql za nastavitev začetne sheme in podatkov
+
 ## API Končne točke
 Tukaj so glavne API končne točke, ki jih uporablja aplikacija:
 
@@ -66,11 +67,10 @@ GET /api/recepti: Pridobi vse recepte.
 POST /api/recepti: Dodaj nov recept.
 PUT /api/recepti/{id}: Posodobi obstoječi recept.
 DELETE /api/recepti/{id}: Izbriši recept po ID-ju.
+
 ## Prihodnje nadgradnje
 Kategorije receptov: Možnost kategorizacije receptov (npr. predjed, glavna jed).
 Avtentikacija uporabnikov: Dodaj prijavo in registracijo uporabnikov za osebno upravljanje receptov.
 Ocene in komentarji: Omogoči uporabnikom ocenjevanje in komentiranje receptov.
 Obvestila: Implementiraj sistem obveščanja uporabnikov o novih receptih ali opomnikih.
-## Licenca
-Ta projekt je licenciran pod MIT licenco. Za več podrobnosti glejte datoteko LICENSE.
 
