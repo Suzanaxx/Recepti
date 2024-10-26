@@ -70,8 +70,8 @@ PUT /api/recepti/{id}: Posodobi obstoječi recept.
 DELETE /api/recepti/{id}: Izbriši recept po ID-ju.
 
 ## Prihodnje nadgradnje
-Kategorije receptov: Možnost kategorizacije receptov (npr. predjed, glavna jed).
-Avtentikacija uporabnikov: Dodaj prijavo in registracijo uporabnikov za osebno upravljanje receptov.
-Ocene in komentarji: Omogoči uporabnikom ocenjevanje in komentiranje receptov.
-Obvestila: Implementiraj sistem obveščanja uporabnikov o novih receptih ali opomnikih.
+-**Kategorije receptov**: Možnost kategorizacije receptov (npr. predjed, glavna jed).
+-**Avtentikacija uporabnikov**: Dodaj prijavo in registracijo uporabnikov za osebno upravljanje receptov.
+-**Ocene in komentarji**: Omogoči uporabnikom ocenjevanje in komentiranje receptov.
+-**Obvestila**: Implementiraj sistem obveščanja uporabnikov o novih receptih ali opomnikih.
 
