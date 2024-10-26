@@ -45,7 +45,7 @@ Vsebuje datoteke frontend-a, ki jih upravlja Node.js.
 2. Nastavite MySQL poverilnice v `application.properties`.
 3. Zaženite aplikacijo:
    
-   `mvn spring-boot:run`
+`mvn spring-boot:run`
 
 ### Namestitev Frontend-a  
 Pojdite v mapo `Frontend`.  
@@ -55,7 +55,7 @@ Namestite odvisnosti:
 
 Zaženite frontend strežnik:
 
-    `npm start`
+`npm start`
 
 ### Nastavitev baze podatkov
 Ustvarite MySQL bazo za aplikacijo.
