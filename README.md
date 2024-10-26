@@ -64,10 +64,10 @@ Zaženite SQL ukaze iz data.sql za nastavitev začetne sheme in podatkov
 ## API Končne točke
 Tukaj so glavne API končne točke, ki jih uporablja aplikacija:
 
-GET /api/recepti: Pridobi vse recepte.
-POST /api/recepti: Dodaj nov recept.
-PUT /api/recepti/{id}: Posodobi obstoječi recept.
-DELETE /api/recepti/{id}: Izbriši recept po ID-ju.
+- **GET /api/recepti**: Pridobi vse recepte.
+- **POST /api/recepti**: Dodaj nov recept.
+- **PUT /api/recepti/{id}**: Posodobi obstoječi recept.
+- **DELETE /api/recepti/{id}**: Izbriši recept po ID-ju.
 
 ## Prihodnje nadgradnje
 
