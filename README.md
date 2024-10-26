@@ -54,6 +54,7 @@ Namestite odvisnosti:
 `npm install`
 
 Zaženite frontend strežnik:
+
     `npm start`
 
 ### Nastavitev baze podatkov
