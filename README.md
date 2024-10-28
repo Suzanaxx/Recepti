@@ -1,4 +1,4 @@
-# Aplikacija za upravljanje receptov ( Suzana Lesjak Glavač	Tilen Grobelšek	Julio Mati)
+# Aplikacija za upravljanje receptov ( Suzana Lesjak Glavač, Tilen Grobelšek, Julio Mati)
 
 ## Pregled
 To je spletna aplikacija za upravljanje receptov, kjer lahko uporabniki dodajajo, urejajo, brišejo in iščejo recepte. Projekt uporablja **Spring Boot** za backend, **Node.js** za frontend ter **MySQL** kot bazo podatkov za shranjevanje informacij o receptih. Aplikacija omogoča enostavno komunikacijo med frontend in backend delom.
