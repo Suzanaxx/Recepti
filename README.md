@@ -76,3 +76,64 @@ Tukaj so glavne API končne točke, ki jih uporablja aplikacija:
 - **Ocene in komentarji**: Omogoči uporabnikom ocenjevanje in komentiranje receptov.
 - **Obvestila**: Implementiraj sistem obveščanja uporabnikov o novih receptih ali opomnikih.
 
+## Vizija projekta
+Namen aplikacije je ustvariti enostavno in intuitivno platformo za upravljanje receptov, ki bo uporabnikom omogočala zbiranje, shranjevanje in deljenje njihovih najljubših kuharskih receptov. S to aplikacijo želimo izboljšati uporabniško izkušnjo pri organizaciji kuharskih receptov in omogočiti lažje iskanje ter filtriranje receptov glede na različne kriterije, kot so sestavine, vrsta jedi in čas priprave. Aplikacija je namenjena tako ljubiteljskim kuharjem kot tudi profesionalcem, ki želijo imeti centralizirano mesto za shranjevanje svojih kulinaričnih idej.
+
+Aplikacija bo rešila problem razdrobljenosti kuharskih zapiskov in digitalizirala shranjevanje receptov, kar bo omogočilo lažje iskanje in urejanje receptov. S tem bo pripomogla k boljšemu načrtovanju obrokov in večji kreativnosti v kuhinji.
+
+Besednjak
+Recept: Popoln seznam sestavin in navodil za pripravo jedi.
+Sestavine: Vse snovi, ki so potrebne za pripravo določenega recepta.
+Navodila: Koraki, ki jih je treba slediti za uspešno pripravo recepta.
+Kategorije receptov: Različne vrste jedi, kot so predjedi, glavne jedi, sladice itd., ki pomagajo pri razvrščanju receptov.
+Iskalnik: Funkcija, ki omogoča uporabnikom hitro iskanje receptov glede na ključne besede.
+Uporabniški profil: Uporabnikov osebni račun, kjer lahko shranjuje in organizira svoje recepte.
+CRUD operacije: Operacije za ustvarjanje, branje, posodabljanje in brisanje receptov.
+MySQL: Baza podatkov, ki se uporablja za shranjevanje vseh informacij o receptih.
+Frontend: Del aplikacije, ki je namenjen uporabniški interakciji, zgrajen z uporabo Node.js.
+Backend: Del aplikacije, ki upravlja s strežniškimi operacijami in podatki, zgrajen z uporabo Spring Boot.
+API: Vmesnik za programiranje aplikacij, ki omogoča komunikacijo med frontend in backend delom aplikacije.
+
+Za izdelavo diagrama primerov uporabe bom opisal, kako ga lahko strukturiramo, nato pa bom ustvaril ustrezen diagram za vas. Po tem vam bom podal tudi Markdown format za vključitev diagrama v README.
+
+Predlog za diagram primerov uporabe
+V diagramu bomo prikazali naslednje glavne interakcije med uporabniki in sistemom:
+
+Dodajanje recepta: Uporabnik lahko dodaja nove recepte v sistem.
+Urejanje recepta: Uporabnik lahko ureja obstoječe recepte.
+Brisanje recepta: Uporabnik lahko izbriše obstoječe recepte.
+Ogled receptov: Uporabnik lahko pregleda seznam vseh razpoložljivih receptov.
+Iskanje receptov: Uporabnik lahko išče recepte glede na določene kriterije, kot so ime recepta ali sestavine.
+Kategorizacija receptov (Prihodnja nadgradnja): Uporabnik lahko recepte razvrsti po kategorijah.
+Avtentikacija uporabnika (Prihodnja nadgradnja): Uporabnik se lahko prijavi ali registrira za dostop do personaliziranih funkcionalnosti.
+Ustvarjanje diagrama primerov uporabe
+Pripravil bom diagram, ki bo prikazoval zgoraj omenjene interakcije med uporabniki in sistemom. Prosimo, da mi dovolite trenutek, da ustvarim ta diagram.
+
+
+Diagram primerov uporabe je ustvarjen. Tukaj je diagram, ki prikazuje glavne interakcije med uporabniki in sistemom.
+
+Obrazložitev primerov uporabe:
+Dodajanje recepta: Uporabnik lahko dodaja nove recepte, vključno z imenom, opisom, sestavinami, navodili in sliko.
+Urejanje recepta: Uporabnik lahko spremeni obstoječe recepte, da jih posodobi ali izboljša.
+Brisanje recepta: Uporabnik lahko odstrani obstoječe recepte iz sistema, če jih ne potrebuje več.
+Ogled receptov: Uporabnik lahko pregleda vse recepte, ki so na voljo v aplikaciji.
+Iskanje receptov: Uporabnik lahko išče recepte po ključnih besedah, kot so ime ali določene sestavine.
+Kategorizacija receptov (Prihodnja nadgradnja): Uporabnik lahko razvršča recepte v različne kategorije, kot so predjedi, glavne jedi in sladice.
+Avtentikacija uporabnika (Prihodnja nadgradnja): Uporabnik se lahko prijavi ali registrira, da dostopa do personaliziranih funkcionalnosti, kot je upravljanje lastnih receptov.
+Vključitev v README
+V README lahko diagram vključite s spodnjo Markdown kodo:
+
+
+## Diagram primerov uporabe
+
+Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki prikazuje glavne interakcije med uporabniki in sistemom:
+
+![Diagram primerov uporabe](./pot-do-diagrama.png)
+
+### Obrazložitev primerov uporabe
+
+1. **Dodajanje recepta**: Uporabnik lahko dodaja nove recepte, vključno z imenom, opisom, sestavinami, navodili in sliko.
+2. **Urejanje recepta**: Uporabnik lahko spremeni obstoječe recepte, da jih posodobi ali izboljša.
+3. **Brisanje recepta**: Uporabnik lahko odstrani obstoječe recepte iz sistema, če jih ne potrebuje več.
+4. **Ogled receptov**: Uporabnik lahko pregleda vse recepte, ki so na voljo v aplikaciji.
+5. **Iskanje receptov**: Uporabnik lahko išče recepte po ključnih besedah, kot so ime ali določene sestavine.
