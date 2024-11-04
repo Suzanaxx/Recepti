@@ -94,36 +94,6 @@ Frontend: Del aplikacije, ki je namenjen uporabniški interakciji, zgrajen z upo
 Backend: Del aplikacije, ki upravlja s strežniškimi operacijami in podatki, zgrajen z uporabo Spring Boot.
 API: Vmesnik za programiranje aplikacij, ki omogoča komunikacijo med frontend in backend delom aplikacije.
 
-Za izdelavo diagrama primerov uporabe bom opisal, kako ga lahko strukturiramo, nato pa bom ustvaril ustrezen diagram za vas. Po tem vam bom podal tudi Markdown format za vključitev diagrama v README.
-
-Predlog za diagram primerov uporabe
-V diagramu bomo prikazali naslednje glavne interakcije med uporabniki in sistemom:
-
-Dodajanje recepta: Uporabnik lahko dodaja nove recepte v sistem.
-Urejanje recepta: Uporabnik lahko ureja obstoječe recepte.
-Brisanje recepta: Uporabnik lahko izbriše obstoječe recepte.
-Ogled receptov: Uporabnik lahko pregleda seznam vseh razpoložljivih receptov.
-Iskanje receptov: Uporabnik lahko išče recepte glede na določene kriterije, kot so ime recepta ali sestavine.
-Kategorizacija receptov (Prihodnja nadgradnja): Uporabnik lahko recepte razvrsti po kategorijah.
-Avtentikacija uporabnika (Prihodnja nadgradnja): Uporabnik se lahko prijavi ali registrira za dostop do personaliziranih funkcionalnosti.
-Ustvarjanje diagrama primerov uporabe
-Pripravil bom diagram, ki bo prikazoval zgoraj omenjene interakcije med uporabniki in sistemom. Prosimo, da mi dovolite trenutek, da ustvarim ta diagram.
-
-
-Diagram primerov uporabe je ustvarjen. Tukaj je diagram, ki prikazuje glavne interakcije med uporabniki in sistemom.
-
-Obrazložitev primerov uporabe:
-Dodajanje recepta: Uporabnik lahko dodaja nove recepte, vključno z imenom, opisom, sestavinami, navodili in sliko.
-Urejanje recepta: Uporabnik lahko spremeni obstoječe recepte, da jih posodobi ali izboljša.
-Brisanje recepta: Uporabnik lahko odstrani obstoječe recepte iz sistema, če jih ne potrebuje več.
-Ogled receptov: Uporabnik lahko pregleda vse recepte, ki so na voljo v aplikaciji.
-Iskanje receptov: Uporabnik lahko išče recepte po ključnih besedah, kot so ime ali določene sestavine.
-Kategorizacija receptov (Prihodnja nadgradnja): Uporabnik lahko razvršča recepte v različne kategorije, kot so predjedi, glavne jedi in sladice.
-Avtentikacija uporabnika (Prihodnja nadgradnja): Uporabnik se lahko prijavi ali registrira, da dostopa do personaliziranih funkcionalnosti, kot je upravljanje lastnih receptov.
-Vključitev v README
-V README lahko diagram vključite s spodnjo Markdown kodo:
-
-
 ## Diagram primerov uporabe
 
 Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki prikazuje glavne interakcije med uporabniki in sistemom:
