@@ -81,18 +81,22 @@ Namen aplikacije je ustvariti enostavno in intuitivno platformo za upravljanje r
 
 Aplikacija bo rešila problem razdrobljenosti kuharskih zapiskov in digitalizirala shranjevanje receptov, kar bo omogočilo lažje iskanje in urejanje receptov. S tem bo pripomogla k boljšemu načrtovanju obrokov in večji kreativnosti v kuhinji.
 
-Besednjak
-Recept: Popoln seznam sestavin in navodil za pripravo jedi.
-Sestavine: Vse snovi, ki so potrebne za pripravo določenega recepta.
-Navodila: Koraki, ki jih je treba slediti za uspešno pripravo recepta.
-Kategorije receptov: Različne vrste jedi, kot so predjedi, glavne jedi, sladice itd., ki pomagajo pri razvrščanju receptov.
-Iskalnik: Funkcija, ki omogoča uporabnikom hitro iskanje receptov glede na ključne besede.
-Uporabniški profil: Uporabnikov osebni račun, kjer lahko shranjuje in organizira svoje recepte.
-CRUD operacije: Operacije za ustvarjanje, branje, posodabljanje in brisanje receptov.
-MySQL: Baza podatkov, ki se uporablja za shranjevanje vseh informacij o receptih.
-Frontend: Del aplikacije, ki je namenjen uporabniški interakciji, zgrajen z uporabo Node.js.
-Backend: Del aplikacije, ki upravlja s strežniškimi operacijami in podatki, zgrajen z uporabo Spring Boot.
-API: Vmesnik za programiranje aplikacij, ki omogoča komunikacijo med frontend in backend delom aplikacije.
+## Vizija projekta
+- Namen aplikacije je ustvariti enostavno in intuitivno platformo za upravljanje receptov, ki bo uporabnikom omogočala zbiranje, shranjevanje in deljenje njihovih najljubših kuharskih receptov. S to aplikacijo želimo izboljšati uporabniško izkušnjo pri organizaciji kuharskih receptov in omogočiti lažje iskanje ter filtriranje receptov glede na različne kriterije, kot so sestavine, vrsta jedi in čas priprave. Aplikacija je namenjena tako ljubiteljskim kuharjem kot tudi profesionalcem, ki želijo imeti centralizirano mesto za shranjevanje svojih kulinaričnih idej.
+- Aplikacija bo rešila problem razdrobljenosti kuharskih zapiskov in digitalizirala shranjevanje receptov, kar bo omogočilo lažje iskanje in urejanje receptov. S tem bo pripomogla k boljšemu načrtovanju obrokov in večji kreativnosti v kuhinji.
+
+## Besednjak
+- **Recept**: Popoln seznam sestavin in navodil za pripravo jedi.
+- **Sestavine**: Vse snovi, ki so potrebne za pripravo določenega recepta.
+- **Navodila**: Koraki, ki jih je treba slediti za uspešno pripravo recepta.
+- **Kategorije receptov**: Različne vrste jedi, kot so predjedi, glavne jedi, sladice itd., ki pomagajo pri razvrščanju receptov.
+- **Iskalnik**: Funkcija, ki omogoča uporabnikom hitro iskanje receptov glede na ključne besede.
+- **Uporabniški profil**: Uporabnikov osebni račun, kjer lahko shranjuje in organizira svoje recepte.
+- **CRUD** operacije: Operacije za ustvarjanje, branje, posodabljanje in brisanje receptov.
+- **MySQL**: Baza podatkov, ki se uporablja za shranjevanje vseh informacij o receptih.
+- **Frontend**: Del aplikacije, ki je namenjen uporabniški interakciji, zgrajen z uporabo Node.js.
+- **Backend**: Del aplikacije, ki upravlja s strežniškimi operacijami in podatki, zgrajen z uporabo Spring Boot.
+- **API**: Vmesnik za programiranje aplikacij, ki omogoča komunikacijo med frontend in backend del
 
 ## Diagram primerov uporabe
 
