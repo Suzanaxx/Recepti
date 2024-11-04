@@ -102,7 +102,7 @@ Aplikacija bo rešila problem razdrobljenosti kuharskih zapiskov in digitalizira
 
 Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki prikazuje glavne interakcije med uporabniki in sistemom:
 
-![Diagram primerov uporabe](./pot-do-diagrama.png)
+![Diagram primerov uporabe](./dpu.png)
 
 ### Obrazložitev primerov uporabe
 
