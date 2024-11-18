@@ -113,3 +113,9 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 3. **Brisanje recepta**: Uporabnik lahko odstrani obstoječe recepte iz sistema, če jih ne potrebuje več.
 4. **Ogled receptov**: Uporabnik lahko pregleda vse recepte, ki so na voljo v aplikaciji.
 5. **Iskanje receptov**: Uporabnik lahko išče recepte po ključnih besedah, kot so ime ali določene sestavine.
+
+### Razredni diagram
+
+![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
+
+
