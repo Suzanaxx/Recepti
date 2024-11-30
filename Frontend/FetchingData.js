@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const userId = 1; // Privzeti uporabnik za testiranje
     const receptForm = document.getElementById('recept-form');
     const receptiContainer = document.getElementById('recepti-container');
     const searchInput = document.getElementById('search-input');
@@ -64,15 +63,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    window.exportToPDF = exportToPDF;
-
     // Funkcija za pridobivanje receptov iz API-ja
     function fetchRecepti() {
         fetch('http://localhost:8081/api/recepti')
             .then(response => response.json())
             .then(data => {
-                recepti = data; // Shrani vse recepte
-                renderRecepti(recepti); // Prikaži vse recepte
+                recepti = data;
+                renderRecepti(recepti);
             })
             .catch(error => console.error('Napaka pri pridobivanju receptov:', error));
     }
@@ -92,40 +89,27 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p>${recept.sestavine}</p>
                             <h6 class="mt-2">Navodila:</h6>
                             <p>${recept.navodila}</p>
-
+    
                             <!-- Komentarji -->
                             <h6 class="mt-4">Komentarji:</h6>
-                            <div id="comments-${recept.id}" class="mb-3"></div>
+                            <div id="comments-${recept.id}" class="mb-3">
+                                <!-- Komentarji bodo prikazani tukaj -->
+                            </div>
                             <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
                             <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
-
-                            <!-- Zvezdice za ocenjevanje -->
-                            <h6 class="mt-4">Ocenite recept:</h6>
-                            <div id="rating-${recept.id}" class="rating">
-                                <span class="star" data-value="1">&#9733;</span>
-                                <span class="star" data-value="2">&#9733;</span>
-                                <span class="star" data-value="3">&#9733;</span>
-                                <span class="star" data-value="4">&#9733;</span>
-                                <span class="star" data-value="5">&#9733;</span>
-                            </div>
-                            <div id="average-rating-${recept.id}" class="mt-2">
-                                Povprečna ocena: <span id="avg-rating-${recept.id}">N/A</span>
-                            </div>
                         </div>
                         <div class="card-footer">
                             <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
                             <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
+                            <button class="btn btn-success" onclick="exportToPDF('${recept.idje}')">Izvozi PDF</button>
                         </div>
                     </div>
                 </div>`;
-        
             fetchComments(recept.id); // Pridobi komentarje za vsak recept
-            fetchAverageRating(recept.id); // Pridobi povprečno oceno za vsak recept
-            addRatingEventListeners(recept.id); // Dodaj dogodek za zvezdice
         });
     }
 
-    // Funkcija za pridobivanje komentarjev za recept
+    // Funkcija za dodajanje novega komentarja
     function fetchComments(recipeId) {
         fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`)
             .then(response => response.json())
@@ -143,16 +127,15 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Komentar ne sme biti prazen!');
             return;
         }
-
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
+    
+        const userId = 1; // Privzeti uporabnik za testiranje (zamenjajte z dinamično vrednostjo, če je na voljo)
+    
+        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments?userId=${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                userId: userId,  // Uporabnik ID je 1 (statistično)
-                comment: content,
-            }),
+            body: JSON.stringify(content),
         })
             .then(response => {
                 if (!response.ok) {
@@ -167,110 +150,26 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Napaka pri dodajanju komentarja:', error));
     }
 
-    // Funkcija za dodajanje ocene preko zvezdic
-    function addRating(recipeId, rating) {
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/ratings`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: userId,  // Uporabnik ID je 1 (statistično)
-                rating: rating,
-            }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Napaka pri dodajanju ocene!');
-            }
-            return response.json();
-        })
-        .then(() => {
-            fetchAverageRating(recipeId); // Osveži povprečno oceno
-        })
-        .catch(error => console.error('Napaka pri dodajanju ocene:', error));
-    }
-
-    // Funkcija za pridobivanje povprečne ocene za recept
-    function fetchAverageRating(recipeId) {
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/ratings`)
-            .then(response => response.json())
-            .then(ratings => {
-                const averageRating = ratings.reduce((acc, curr) => acc + curr.rating, 0) / ratings.length;
-                const avgElement = document.getElementById(`avg-rating-${recipeId}`);
-                avgElement.textContent = isNaN(averageRating) ? "N/A" : averageRating.toFixed(1);
-            })
-            .catch(error => console.error('Napaka pri pridobivanju ocen:', error));
-    }
-
-    // Funkcija za dodajanje event listenerjev na zvezdice
-    function addRatingEventListeners(recipeId) {
-        const stars = document.querySelectorAll(`#rating-${recipeId} .star`);
-        stars.forEach(star => {
-            star.addEventListener('click', function () {
-                const rating = parseInt(this.getAttribute('data-value'));
-                addRating(recipeId, rating);  // Dodaj oceno
-                updateStarRating(recipeId, rating);  // Posodobi zvezdice
-            });
-
-            // Prikaz zvezdic ob hoverju
-            star.addEventListener('mouseover', function () {
-                const ratingValue = parseInt(this.getAttribute('data-value'));
-                highlightStars(recipeId, ratingValue);  // Poudari zvezdice ob hoverju
-            });
-
-            star.addEventListener('mouseleave', function () {
-                clearHighlightedStars(recipeId);  // Odstrani poudarjene zvezdice po končanem hoverju
-            });
-        });
-    }
-
-    // Funkcija za posodabljanje napolnjenih zvezdic
-    function updateStarRating(recipeId, rating) {
-        const stars = document.querySelectorAll(`#rating-${recipeId} .star`);
-        stars.forEach(star => {
-            if (parseInt(star.getAttribute('data-value')) <= rating) {
-                star.classList.add('checked');
-            } else {
-                star.classList.remove('checked');
-            }
-        });
-    }
-
-    // Funkcija za poudarjanje zvezdic med hoverjem
-    function highlightStars(recipeId, ratingValue) {
-        const stars = document.querySelectorAll(`#rating-${recipeId} .star`);
-        stars.forEach(star => {
-            if (parseInt(star.getAttribute('data-value')) <= ratingValue) {
-                star.classList.add('checked');
-            } else {
-                star.classList.remove('checked');
-            }
-        });
-    }
-
-    // Funkcija za odstranjevanje poudarjenih zvezdic po končanem hoverju
-    function clearHighlightedStars(recipeId) {
-        const stars = document.querySelectorAll(`#rating-${recipeId} .star`);
-        stars.forEach(star => {
-            star.classList.remove('checked');
-        });
-    }
+    // Dodaj funkcijo v globalni obseg
+    window.addComment = addComment;
 
     // Funkcija za brisanje recepta
-    window.deleteRecept = function(idje) {
-        fetch(`http://localhost:8081/api/recepti/${idje}`, {
-            method: 'DELETE',
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Napaka pri brisanju recepta');
-            }
-            fetchRecepti(); // Ponovno pridobi vse recepte
-        })
-        .catch(error => console.error('Napaka pri brisanju recepta:', error));
-    }
+    window.deleteRecept = function (idje) {
+        fetch(`http://localhost:8081/api/recepti/${idje}`, { method: 'DELETE' })
+            .then(() => fetchRecepti())
+            .catch(error => console.error('Napaka pri brisanju recepta:', error));
+    };
 
-    // Inicializacija - pridobi recepte ob nalaganju strani
+    // Funkcija za urejanje recepta (polni formo)
+    window.populateForm = function (idje, ime, opis, sestavine, navodila, slika) {
+        document.getElementById('idje').value = idje;
+        document.getElementById('ime').value = ime;
+        document.getElementById('opis').value = opis;
+        document.getElementById('sestavine').value = sestavine;
+        document.getElementById('navodila').value = navodila;
+        document.getElementById('slika').value = slika;
+    };
+
+    // Inicializacija
     fetchRecepti();
 });
