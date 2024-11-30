@@ -56,14 +56,15 @@ public class ReceptService {
     }
 
     // Pridobi vse komentarje za recept
+    // Fetch comments for a specific recipe
     public List<Comment> getComments(Long recipeId) {
         return commentRepository.findByRecept_Id(recipeId);
     }
 
-    // Dodaj komentar k receptu
+    // Add a comment to a specific recipe
     public Comment addComment(Long recipeId, Long userId, String content) {
         Recept recept = receptRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("Recept not found"));
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
         Comment comment = new Comment();
         comment.setRecept(recept);
@@ -74,22 +75,28 @@ public class ReceptService {
         return commentRepository.save(comment);
     }
 
-    // Pridobi vse ocene za recept
-    public List<Rating> getRatings(Long recipeId) {
-        return ratingRepository.findByRecept_Id(recipeId);
-    }
 
-    // Dodaj oceno k receptu
-    public Rating addRating(Long recipeId, Long userId, int rating) {
+    public Rating addOrUpdateRating(Long recipeId, Long userId, int rating) {
         Recept recept = receptRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("Recept not found"));
+                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+        Rating existingRating = ratingRepository.findByRecept_IdAndUserId(recipeId, userId).orElse(null);
+
+        if (existingRating != null) {
+            existingRating.setRating(rating);
+            return ratingRepository.save(existingRating);
+        }
 
         Rating newRating = new Rating();
         newRating.setRecept(recept);
         newRating.setUserId(userId);
         newRating.setRating(rating);
         newRating.setCreatedAt(LocalDateTime.now());
-
         return ratingRepository.save(newRating);
     }
+
+    public Double getAverageRating(Long recipeId) {
+        return ratingRepository.findAverageRatingByRecipeId(recipeId);
+    }
 }
+

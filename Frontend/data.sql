@@ -14,7 +14,6 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,            -- Unikatno uporabniško ime
     email VARCHAR(100) NOT NULL UNIQUE,              -- Unikaten email
     password VARCHAR(255) NOT NULL,                  -- Geslo (hashirano)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP   -- Datum registracije
 );
 
 -- Tabela za recepte
