@@ -13,31 +13,57 @@ public class ReceptController {
     @Autowired
     private ReceptService receptService;
 
+    // Pridobi vse recepte
     @GetMapping
     public List<Recept> getAllRecepti() {
         return receptService.getAllRecepti();
     }
 
+    // Pridobi recept po ID-ju
     @GetMapping("/{idje}")
     public Recept getReceptByIdje(@PathVariable String idje) {
         return receptService.getReceptByIdje(idje);
     }
 
-    // Create a new recipe
+    // Ustvari nov recept
     @PostMapping
     public Recept createRecept(@RequestBody Recept recept) {
         return receptService.createRecept(recept);
     }
 
-    // Update an existing recipe
+    // Posodobi obstoječi recept
     @PutMapping("/{idje}")
     public Recept updateRecept(@PathVariable String idje, @RequestBody Recept recept) {
         return receptService.updateRecept(idje, recept);
     }
 
-    // Delete a recipe
+    // Izbriši recept
     @DeleteMapping("/{idje}")
     public void deleteRecept(@PathVariable String idje) {
         receptService.deleteRecept(idje);
+    }
+
+    // Pridobi komentarje za recept
+    @GetMapping("/{recipeId}/comments")
+    public List<Comment> getComments(@PathVariable Long recipeId) {
+        return receptService.getComments(recipeId);
+    }
+
+    // Dodaj komentar k receptu
+    @PostMapping("/{recipeId}/comments")
+    public Comment addComment(@PathVariable Long recipeId, @RequestParam Long userId, @RequestBody String content) {
+        return receptService.addComment(recipeId, userId, content);
+    }
+
+    // Pridobi ocene za recept
+    @GetMapping("/{recipeId}/ratings")
+    public List<Rating> getRatings(@PathVariable Long recipeId) {
+        return receptService.getRatings(recipeId);
+    }
+
+    // Dodaj oceno k receptu
+    @PostMapping("/{recipeId}/ratings")
+    public Rating addRating(@PathVariable Long recipeId, @RequestParam Long userId, @RequestParam int rating) {
+        return receptService.addRating(recipeId, userId, rating);
     }
 }
