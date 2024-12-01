@@ -127,16 +127,6 @@ Za zagon vseh testov uporabite:
 ```bash
 mvn test
 
----
 
-### **6. Zagon testov v IntelliJ**
-1. Odprite `ReceptServiceTest.java`.
-2. Kliknite zeleno puščico ob razredu ali posamezni metodi.
-3. Izberite `Run` za zagon testov.
-4. Preverite rezultate v **Run Tool Window**.
-
----
-
-S tem pokrijete funkcionalnost ocenjevanja in izpolnite zahteve naloge. Če potrebujete dodatno pomoč, me obvestite!
 
 
