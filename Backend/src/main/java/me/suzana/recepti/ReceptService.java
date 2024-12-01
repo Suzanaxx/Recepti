@@ -1,10 +1,14 @@
 package me.suzana.recepti;
 
+import com.itextpdf.text.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 @Service
 public class ReceptService {
@@ -97,8 +101,42 @@ public class ReceptService {
 
 
     public byte[] generatePDF(Recept recept) {
-        // Generate PDF
-        return new byte[0];
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Document document = new Document();
+            PdfWriter.getInstance(document, out);
+            document.open();
+
+            // Add Title
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20);
+            Paragraph title = new Paragraph("Recipe: " + recept.getIme(), titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            document.add(new Paragraph(" ")); // Blank line
+
+            // Add Description
+            Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
+            document.add(new Paragraph("Description:", sectionFont));
+            document.add(new Paragraph(recept.getOpis() != null ? recept.getOpis() : "No description available"));
+
+            document.add(new Paragraph(" ")); // Blank line
+
+            // Add Ingredients
+            document.add(new Paragraph("Ingredients:", sectionFont));
+            document.add(new Paragraph(recept.getSestavine() != null ? recept.getSestavine() : "No ingredients available"));
+
+            document.add(new Paragraph(" ")); // Blank line
+
+            // Add Instructions
+            document.add(new Paragraph("Instructions:", sectionFont));
+            document.add(new Paragraph(recept.getNavodila() != null ? recept.getNavodila() : "No instructions available"));
+
+            document.close();
+
+            return out.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating PDF", e);
+        }
     }
 }
 
