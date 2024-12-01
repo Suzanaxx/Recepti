@@ -124,36 +124,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     function addComment(recipeId, content) {
-        if (!content.trim()) {
-            alert('Comment cannot be empty!');
-            return;
-        }
-    
-        const userId = JSON.parse(localStorage.getItem('loggedInUser')).id; // Get logged-in user's ID
-    
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: userId,
-                comment: content,
-            }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error adding comment!');
-                }
-                return response.json();
-            })
-            .then(() => {
-                fetchComments(recipeId); // Refresh comments
-                document.getElementById(`comment-input-${recipeId}`).value = ''; // Clear input field
-            })
-            .catch(error => console.error('Error adding comment:', error));
+    if (!content.trim()) {
+        alert('Comment cannot be empty!');
+        return;
     }
-    
+
+    const userId = JSON.parse(localStorage.getItem('loggedInUser')).id; // Get logged-in user's ID
+
+    fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userId: userId,
+            comment: content,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error adding comment!');
+            }
+            return response.json();
+        })
+        .then(() => {
+            fetchComments(recipeId); // Refresh comments
+            document.getElementById(`comment-input-${recipeId}`).value = ''; // Clear input field
+        })
+        .catch(error => console.error('Error adding comment:', error));
+}
+
 
     // Dodaj funkcijo v globalni obseg
     window.addComment = addComment;
