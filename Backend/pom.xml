@@ -58,12 +58,15 @@
             <scope>runtime</scope>
         </dependency>
         -->
+<<<<<<< HEAD
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
             <version>5.5.13.2</version>
         </dependency>
 
+=======
+>>>>>>> parent of 3450311 (izvoz)
 
         <!-- Spring Boot Test Starter -->
         <dependency>
