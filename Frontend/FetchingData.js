@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
                             <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
                         </div>
+                        
                         <div class="card-footer">
                             <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
                             <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
@@ -124,31 +125,35 @@ document.addEventListener('DOMContentLoaded', function () {
     
     function addComment(recipeId, content) {
         if (!content.trim()) {
-            alert('Komentar ne sme biti prazen!');
+            alert('Comment cannot be empty!');
             return;
         }
     
-        const userId = 1; // Privzeti uporabnik za testiranje (zamenjajte z dinamično vrednostjo, če je na voljo)
+        const userId = JSON.parse(localStorage.getItem('loggedInUser')).id; // Get logged-in user's ID
     
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments?userId=${userId}`, {
+        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(content),
+            body: JSON.stringify({
+                userId: userId,
+                comment: content,
+            }),
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Napaka pri dodajanju komentarja!');
+                    throw new Error('Error adding comment!');
                 }
                 return response.json();
             })
             .then(() => {
-                fetchComments(recipeId); // Osveži komentarje
-                document.getElementById(`comment-input-${recipeId}`).value = ''; // Počisti vnosno polje
+                fetchComments(recipeId); // Refresh comments
+                document.getElementById(`comment-input-${recipeId}`).value = ''; // Clear input field
             })
-            .catch(error => console.error('Napaka pri dodajanju komentarja:', error));
+            .catch(error => console.error('Error adding comment:', error));
     }
+    
 
     // Dodaj funkcijo v globalni obseg
     window.addComment = addComment;
