@@ -23,6 +23,7 @@ public class Comment {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+
     // Getters and Setters
     public Long getId() {
         return id;
