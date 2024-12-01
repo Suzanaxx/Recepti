@@ -118,4 +118,15 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 
 ![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
 
+## Testiranje
+Projekt vključuje enotne teste za naslednje funkcionalnosti:
+- **Ocenjevanje receptov (rating)**: Preverjanje dodajanja in obravnave napak.
+
+### Zagon testov
+Za zagon vseh testov uporabite:
+```bash
+mvn test
+
+
+
 
