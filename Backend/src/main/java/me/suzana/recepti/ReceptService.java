@@ -22,6 +22,10 @@ public class ReceptService {
     @Autowired
     private RatingRepository ratingRepository;
 
+    public ReceptService(ReceptRepository receptRepository, RatingRepository ratingRepository) {
+        this.receptRepository = receptRepository;
+        this.ratingRepository = ratingRepository;
+    }
     // Pridobi vse recepte
     public List<Recept> getAllRecepti() {
         return receptRepository.findAll();
