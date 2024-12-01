@@ -1,6 +1,7 @@
 package me.suzana.recepti;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -92,15 +93,9 @@ public class ReceptController {
         byte[] pdfBytes = receptService.generatePDF(recept);
 
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=" + recept.getIme() + ".pdf")
-                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recept.getIme() + ".pdf\"")
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
-
-
-
-
-
-
 
 }
