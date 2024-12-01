@@ -4,84 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-input');
     let recepti = []; // Shranimo vse recepte tukaj
 
-    // Funkcija za izvoz recepta v PDF
-<<<<<<< HEAD
-    window.exportToPDF = function (idje) {
-        const recept = recepti.find(r => r.idje === idje); // Najdi specifičen recept
-=======
-    function exportToPDF(idje) {
-        const recept = recepti.find(r => r.idje === idje);
->>>>>>> parent of 3450311 (izvoz)
-        if (!recept) {
-            console.error('Recept ni najden!');
-            return;
-        }
-
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        const marginLeft = 20;
-        const lineHeight = 10;
-        let yPosition = 20;
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.text("Recept: " + recept.ime, marginLeft, yPosition);
-
-        yPosition += lineHeight + 10;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(14);
-        doc.text("Opis:", marginLeft, yPosition);
-        yPosition += lineHeight;
-<<<<<<< HEAD
-        doc.text(recept.opis || "Ni opisa na voljo", marginLeft, yPosition, { maxWidth: 170 });
-=======
-        doc.text(recept.opis, marginLeft, yPosition, { maxWidth: 170 });
->>>>>>> parent of 3450311 (izvoz)
-
-        yPosition += lineHeight * 2;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Sestavine:", marginLeft, yPosition);
-        yPosition += lineHeight;
-        doc.setFont("helvetica", "normal");
-<<<<<<< HEAD
-        const ingredients = recept.sestavine ? recept.sestavine.split('\n') : ["Ni sestavin na voljo"];
-        ingredients.forEach(ingredient => {
-            doc.text("- " + ingredient.trim(), marginLeft, yPosition);
-            yPosition += lineHeight;
-        });
-
-        doc.save(`${recept.ime}.pdf`);
-    };
-=======
-        doc.text(recept.sestavine, marginLeft, yPosition, { maxWidth: 170 });
-
-        yPosition += lineHeight * 2;
-
-        doc.setFont("helvetica", "bold");
-        doc.text("Navodila:", marginLeft, yPosition);
-        yPosition += lineHeight;
-        doc.setFont("helvetica", "normal");
-        doc.text(recept.navodila, marginLeft, yPosition, { maxWidth: 170 });
-
-        yPosition += lineHeight * 3;
-
-        if (recept.slika) {
-            const img = new Image();
-            img.src = recept.slika;
-            img.onload = function () {
-                const imgWidth = 80;
-                const imgHeight = 80;
-                doc.addImage(img, 'JPEG', marginLeft, yPosition, imgWidth, imgHeight);
-                doc.save(recept.ime + ".pdf");
-            };
-        } else {
-            doc.save(recept.ime + ".pdf");
-        }
-    }
->>>>>>> parent of 3450311 (izvoz)
+    
 
     // Funkcija za pridobivanje receptov iz API-ja
     function fetchRecepti() {
@@ -94,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Napaka pri pridobivanju receptov:', error));
     }
 
-     // Funkcija za prikaz receptov
-     function renderRecepti(receptiToRender) {
+    // Funkcija za prikaz receptov
+    function renderRecepti(receptiToRender) {
         receptiContainer.innerHTML = '';
         receptiToRender.forEach(recept => {
             receptiContainer.innerHTML += `
@@ -147,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Funkcija za pridobivanje komentarjev
+    // Funkcija za dodajanje novega komentarja
     function fetchComments(recipeId) {
         fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`)
             .then(response => response.json())
@@ -159,34 +82,40 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Napaka pri pridobivanju komentarjev:', error));
     }
-
-    // Funkcija za dodajanje novega komentarja
+    
     function addComment(recipeId, content) {
-        if (!content.trim()) {
-            alert('Komentar ne sme biti prazen!');
-            return;
-        }
-
-        const userId = 1;
-
-        fetch(`http://localhost:8081/api/recepti/${recipeId}/comments?userId=${userId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comment: content }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Napaka pri dodajanju komentarja!');
-                }
-                return response.json();
-            })
-            .then(() => {
-                fetchComments(recipeId); 
-                document.getElementById(`comment-input-${recipeId}`).value = '';
-            })
-            .catch(error => console.error('Napaka pri dodajanju komentarja:', error));
+    if (!content.trim()) {
+        alert('Comment cannot be empty!');
+        return;
     }
 
+    const userId = JSON.parse(localStorage.getItem('loggedInUser')).id; // Get logged-in user's ID
+
+    fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userId: userId,
+            comment: content,
+        }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error adding comment!');
+            }
+            return response.json();
+        })
+        .then(() => {
+            fetchComments(recipeId); // Refresh comments
+            document.getElementById(`comment-input-${recipeId}`).value = ''; // Clear input field
+        })
+        .catch(error => console.error('Error adding comment:', error));
+}
+
+
+    // Dodaj funkcijo v globalni obseg
     window.addComment = addComment;
 
     // Funkcija za brisanje recepta
@@ -195,9 +124,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(() => fetchRecepti())
             .catch(error => console.error('Napaka pri brisanju recepta:', error));
     };
-<<<<<<< HEAD
-
-=======
     window.submitRating = function (recipeId) {
         const ratingSelect = document.getElementById(`rating-select-${recipeId}`);
         const feedbackDiv = document.getElementById(`rating-feedback-${recipeId}`);
@@ -249,10 +175,79 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     };
     
+    // Funkcija za izvoz recepta v PDF
+    window.exportToPDF = function (idje) {
+        const recept = recepti.find(r => r.idje === idje); // Find the specific recipe
+        if (!recept) {
+            console.error('Recept ni najden!');
+            return;
+        }
+    
+        // Use jsPDF to generate the PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+    
+        const marginLeft = 20;
+        const lineHeight = 10;
+        let yPosition = 20;
+    
+        // Add Recipe Title
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.text("Recept: " + recept.ime, marginLeft, yPosition);
+    
+        yPosition += lineHeight + 10;
+    
+        // Add Description
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(14);
+        doc.text("Opis:", marginLeft, yPosition);
+        yPosition += lineHeight;
+        doc.text(recept.opis || "Ni opisa na voljo", marginLeft, yPosition, { maxWidth: 170 });
+    
+        yPosition += lineHeight * 2;
+    
+        // Add Ingredients (Sestavine in rows)
+        doc.setFont("helvetica", "bold");
+        doc.text("Sestavine:", marginLeft, yPosition);
+        yPosition += lineHeight;
+        doc.setFont("helvetica", "normal");
+        const ingredients = recept.sestavine ? recept.sestavine.split('\n') : ["Ni sestavin na voljo"];
+        ingredients.forEach(ingredient => {
+            doc.text("- " + ingredient.trim(), marginLeft, yPosition);
+            yPosition += lineHeight;
+        });
+    
+        yPosition += lineHeight;
+    
+        // Add Instructions
+        doc.setFont("helvetica", "bold");
+        doc.text("Navodila:", marginLeft, yPosition);
+        yPosition += lineHeight;
+        doc.setFont("helvetica", "normal");
+        doc.text(recept.navodila || "Ni navodil na voljo", marginLeft, yPosition, { maxWidth: 170 });
+    
+        yPosition += lineHeight * 3;
+    
+        // Add Image (if available)
+        if (recept.slika) {
+            const img = new Image();
+            img.src = recept.slika;
+            img.onload = function () {
+                const imgWidth = 80;
+                const imgHeight = 80;
+                doc.addImage(img, 'JPEG', marginLeft, yPosition, imgWidth, imgHeight);
+                doc.save(recept.ime + ".pdf");
+            };
+        } else {
+            doc.save(recept.ime + ".pdf");
+        }
+    };
     
     
     
->>>>>>> parent of 3450311 (izvoz)
+    
+    
     // Funkcija za urejanje recepta (polni formo)
     window.populateForm = function (idje, ime, opis, sestavine, navodila, slika) {
         document.getElementById('idje').value = idje;
@@ -263,5 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('slika').value = slika;
     };
 
+    // Inicializacija
     fetchRecepti();
 });
