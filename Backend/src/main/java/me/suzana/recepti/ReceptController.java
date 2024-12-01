@@ -1,6 +1,8 @@
 package me.suzana.recepti;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,15 +74,33 @@ public class ReceptController {
 
     @PostMapping("/{recipeId}/ratings")
     public ResponseEntity<String> submitRating(@PathVariable Long recipeId, @RequestBody Map<String, Object> payload) {
+        System.out.println("Received rating for recipeId: " + recipeId + ", Payload: " + payload);
+
         Long userId = Long.valueOf(payload.get("userId").toString());
         int rating = Integer.parseInt(payload.get("rating").toString());
 
         receptService.addOrUpdateRating(recipeId, userId, rating);
         return ResponseEntity.ok("Rating submitted successfully");
     }
+    @PostMapping("/{idje}/export-pdf")
+    public ResponseEntity<byte[]> exportRecipeToPDF(@PathVariable String idje) {
+        Recept recept = receptService.getReceptByIdje(idje);
+        if (recept == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
 
-    @GetMapping("/{recipeId}/average-rating")
-    public ResponseEntity<Double> getAverageRating(@PathVariable Long recipeId) {
-        return ResponseEntity.ok(receptService.getAverageRating(recipeId));
+        byte[] pdfBytes = receptService.generatePDF(recept);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + recept.getIme() + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
+
+
+
+
+
+
+
 }

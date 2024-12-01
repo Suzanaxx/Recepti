@@ -95,8 +95,10 @@ public class ReceptService {
         return ratingRepository.save(newRating);
     }
 
-    public Double getAverageRating(Long recipeId) {
-        return ratingRepository.findAverageRatingByRecipeId(recipeId);
+
+    public byte[] generatePDF(Recept recept) {
+        // Generate PDF
+        return new byte[0];
     }
 }
 

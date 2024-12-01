@@ -89,7 +89,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p>${recept.sestavine}</p>
                             <h6 class="mt-2">Navodila:</h6>
                             <p>${recept.navodila}</p>
-    
+
+                        <div class="rating-container" style="max-width: 50%; margin: auto;">
+                            <label for="rating-select">Rate this Recipe:</label>
+                            <select id="rating-select-${recept.id}" class="form-select">
+                                <option value="" selected disabled>Select Rating</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button class="btn btn-primary mt-2" onclick="submitRating(${recept.id})">Submit Rating</button>
+                            <div id="rating-feedback-${recept.id}" class="mt-2" style="font-size: 0.9em;"></div>
+                        </div>
+
                             <!-- Komentarji -->
                             <h6 class="mt-4">Komentarji:</h6>
                             <div id="comments-${recept.id}" class="mb-3">
@@ -107,6 +121,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>`;
             fetchComments(recept.id); // Pridobi komentarje za vsak recept
+            submitRating(recept.id); // Submit rating for each recipe
+            populateForm(recept.idje, recept.ime, recept.opis, recept.sestavine, recept.navodila, recept.slika); // Fill form for each recipe
+            
         });
     }
 
@@ -164,7 +181,60 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(() => fetchRecepti())
             .catch(error => console.error('Napaka pri brisanju recepta:', error));
     };
-
+    window.submitRating = function (recipeId) {
+        const ratingSelect = document.getElementById(`rating-select-${recipeId}`);
+        const feedbackDiv = document.getElementById(`rating-feedback-${recipeId}`);
+        const rating = ratingSelect.value;
+    
+        if (!rating) {
+            feedbackDiv.innerText = "Please select a rating!";
+            feedbackDiv.style.color = "red";
+            return;
+        }
+    
+        // Retrieve the logged-in user's data from localStorage
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    
+        if (!loggedInUser || !loggedInUser.id) {
+            feedbackDiv.innerText = "User not logged in!";
+            feedbackDiv.style.color = "red";
+            return;
+        }
+    
+        const userId = loggedInUser.id; // Use the correct user ID from the logged-in user
+    
+        // Debugging: Log the values being sent
+        console.log(`Submitting rating for recipeId: ${recipeId}, userId: ${userId}, rating: ${rating}`);
+    
+        fetch(`http://localhost:8081/api/recepti/${recipeId}/ratings`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId, rating }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    console.error(`Failed to submit rating. Status: ${response.status}`);
+                    throw new Error("Failed to submit rating");
+                }
+                return response.text();
+            })
+            .then((message) => {
+                console.log(`Server Response: ${message}`);
+                feedbackDiv.innerText = "Rating submitted successfully!";
+                feedbackDiv.style.color = "green";
+            })
+            .catch((error) => {
+                feedbackDiv.innerText = "Error submitting rating. Please try again.";
+                feedbackDiv.style.color = "red";
+                console.error("Error submitting rating:", error);
+            });
+    };
+    
+    
+    
+    
     // Funkcija za urejanje recepta (polni formo)
     window.populateForm = function (idje, ime, opis, sestavine, navodila, slika) {
         document.getElementById('idje').value = idje;
