@@ -118,4 +118,25 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 
 ![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
 
+## Testiranje
+Projekt vključuje enotne teste za naslednje funkcionalnosti:
+- **Ocenjevanje receptov (rating)**: Preverjanje dodajanja in obravnave napak.
+
+### Zagon testov
+Za zagon vseh testov uporabite:
+```bash
+mvn test
+
+---
+
+### **6. Zagon testov v IntelliJ**
+1. Odprite `ReceptServiceTest.java`.
+2. Kliknite zeleno puščico ob razredu ali posamezni metodi.
+3. Izberite `Run` za zagon testov.
+4. Preverite rezultate v **Run Tool Window**.
+
+---
+
+S tem pokrijete funkcionalnost ocenjevanja in izpolnite zahteve naloge. Če potrebujete dodatno pomoč, me obvestite!
+
 
