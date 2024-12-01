@@ -1,6 +1,9 @@
 package me.suzana.recepti;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,5 +68,19 @@ public class ReceptController {
     @PostMapping("/{recipeId}/ratings")
     public Rating addRating(@PathVariable Long recipeId, @RequestParam Long userId, @RequestParam int rating) {
         return receptService.addRating(recipeId, userId, rating);
+    }
+    @PostMapping("/{idje}/export-pdf")
+    public ResponseEntity<byte[]> exportRecipeToPDF(@PathVariable String idje) {
+        Recept recept = receptService.getReceptByIdje(idje);
+        if (recept == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        byte[] pdfBytes = receptService.generatePDF(recept);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + recept.getIme() + ".pdf\"")
+                .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 }
