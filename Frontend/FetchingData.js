@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Napaka pri pridobivanju receptov:', error));
     }
 
-    // Funkcija za prikaz receptov
-    function renderRecepti(receptiToRender) {
+     // Funkcija za prikaz receptov
+     function renderRecepti(receptiToRender) {
         receptiContainer.innerHTML = '';
         receptiToRender.forEach(recept => {
             receptiContainer.innerHTML += `
@@ -73,12 +73,29 @@ document.addEventListener('DOMContentLoaded', function () {
                             <h6 class="mt-2">Navodila:</h6>
                             <p>${recept.navodila}</p>
 
+                        <div class="rating-container" style="max-width: 50%; margin: auto;">
+                            <label for="rating-select">Rate this Recipe:</label>
+                            <select id="rating-select-${recept.id}" class="form-select">
+                                <option value="" selected disabled>Select Rating</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button class="btn btn-primary mt-2" onclick="submitRating(${recept.id})">Submit Rating</button>
+                            <div id="rating-feedback-${recept.id}" class="mt-2" style="font-size: 0.9em;"></div>
+                        </div>
+
+                            <!-- Komentarji -->
                             <h6 class="mt-4">Komentarji:</h6>
                             <div id="comments-${recept.id}" class="mb-3">
+                                <!-- Komentarji bodo prikazani tukaj -->
                             </div>
                             <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
                             <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
                         </div>
+                        
                         <div class="card-footer">
                             <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
                             <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
@@ -86,7 +103,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </div>
                 </div>`;
-            fetchComments(recept.id); 
+            fetchComments(recept.id); // Pridobi komentarje za vsak recept
+            submitRating(recept.id); // Submit rating for each recipe
+            populateForm(recept.idje, recept.ime, recept.opis, recept.sestavine, recept.navodila, recept.slika); // Fill form for each recipe
+            
         });
     }
 
