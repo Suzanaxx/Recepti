@@ -1,14 +1,15 @@
 package me.suzana.recepti;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import com.itextpdf.text.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
+
 import java.time.LocalDateTime;
 import java.util.List;
-
-
 
 @Service
 public class ReceptService {
@@ -60,15 +61,14 @@ public class ReceptService {
     }
 
     // Pridobi vse komentarje za recept
-    // Fetch comments for a specific recipe
     public List<Comment> getComments(Long recipeId) {
         return commentRepository.findByRecept_Id(recipeId);
     }
 
-    // Add a comment to a specific recipe
+    // Dodaj komentar k receptu
     public Comment addComment(Long recipeId, Long userId, String content) {
         Recept recept = receptRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+                .orElseThrow(() -> new RuntimeException("Recept not found"));
 
         Comment comment = new Comment();
         comment.setRecept(recept);
@@ -79,26 +79,24 @@ public class ReceptService {
         return commentRepository.save(comment);
     }
 
+    // Pridobi vse ocene za recept
+    public List<Rating> getRatings(Long recipeId) {
+        return ratingRepository.findByRecept_Id(recipeId);
+    }
 
-    public Rating addOrUpdateRating(Long recipeId, Long userId, int rating) {
+    // Dodaj oceno k receptu
+    public Rating addRating(Long recipeId, Long userId, int rating) {
         Recept recept = receptRepository.findById(recipeId)
-                .orElseThrow(() -> new RuntimeException("Recipe not found"));
-
-        Rating existingRating = ratingRepository.findByRecept_IdAndUserId(recipeId, userId).orElse(null);
-
-        if (existingRating != null) {
-            existingRating.setRating(rating);
-            return ratingRepository.save(existingRating);
-        }
+                .orElseThrow(() -> new RuntimeException("Recept not found"));
 
         Rating newRating = new Rating();
         newRating.setRecept(recept);
         newRating.setUserId(userId);
         newRating.setRating(rating);
         newRating.setCreatedAt(LocalDateTime.now());
+
         return ratingRepository.save(newRating);
     }
-
 
     public byte[] generatePDF(Recept recept) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -139,4 +137,3 @@ public class ReceptService {
         }
     }
 }
-

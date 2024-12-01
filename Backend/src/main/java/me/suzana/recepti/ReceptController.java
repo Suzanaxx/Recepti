@@ -3,12 +3,10 @@ package me.suzana.recepti;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RestController
@@ -23,7 +21,6 @@ public class ReceptController {
     public List<Recept> getAllRecepti() {
         return receptService.getAllRecepti();
     }
-
 
     // Pridobi recept po ID-ju
     @GetMapping("/{idje}")
@@ -50,38 +47,27 @@ public class ReceptController {
     }
 
     // Pridobi komentarje za recept
-    // Fetch comments for a recipe
     @GetMapping("/{recipeId}/comments")
-    public List<Comment> getCommentsForRecipe(@PathVariable Long recipeId) {
+    public List<Comment> getComments(@PathVariable Long recipeId) {
         return receptService.getComments(recipeId);
     }
 
-
+    // Dodaj komentar k receptu
     @PostMapping("/{recipeId}/comments")
-    public Comment addCommentToRecipe(
-            @PathVariable Long recipeId,
-            @RequestBody Map<String, String> payload) {
-        String userId = payload.get("userId");
-        String comment = payload.get("comment");
-
-        if (userId == null || comment == null) {
-            throw new RuntimeException("Missing required fields: userId or comment");
-        }
-
-        return receptService.addComment(recipeId, Long.parseLong(userId), comment);
+    public Comment addComment(@PathVariable Long recipeId, @RequestParam Long userId, @RequestBody String content) {
+        return receptService.addComment(recipeId, userId, content);
     }
 
+    // Pridobi ocene za recept
+    @GetMapping("/{recipeId}/ratings")
+    public List<Rating> getRatings(@PathVariable Long recipeId) {
+        return receptService.getRatings(recipeId);
+    }
 
-
+    // Dodaj oceno k receptu
     @PostMapping("/{recipeId}/ratings")
-    public ResponseEntity<String> submitRating(@PathVariable Long recipeId, @RequestBody Map<String, Object> payload) {
-        System.out.println("Received rating for recipeId: " + recipeId + ", Payload: " + payload);
-
-        Long userId = Long.valueOf(payload.get("userId").toString());
-        int rating = Integer.parseInt(payload.get("rating").toString());
-
-        receptService.addOrUpdateRating(recipeId, userId, rating);
-        return ResponseEntity.ok("Rating submitted successfully");
+    public Rating addRating(@PathVariable Long recipeId, @RequestParam Long userId, @RequestParam int rating) {
+        return receptService.addRating(recipeId, userId, rating);
     }
     @PostMapping("/{idje}/export-pdf")
     public ResponseEntity<byte[]> exportRecipeToPDF(@PathVariable String idje) {
@@ -97,5 +83,4 @@ public class ReceptController {
                 .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
-
 }
