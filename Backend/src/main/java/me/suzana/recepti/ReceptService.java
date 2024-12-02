@@ -4,11 +4,10 @@ import com.itextpdf.text.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
-
-
 
 @Service
 public class ReceptService {
@@ -22,10 +21,20 @@ public class ReceptService {
     @Autowired
     private RatingRepository ratingRepository;
 
+    // Konstruktor za Spring, ki podpira vse odvisnosti
+    @Autowired
+    public ReceptService(ReceptRepository receptRepository, RatingRepository ratingRepository, CommentRepository commentRepository) {
+        this.receptRepository = receptRepository;
+        this.ratingRepository = ratingRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    // Konstruktor za teste (brez CommentRepository)
     public ReceptService(ReceptRepository receptRepository, RatingRepository ratingRepository) {
         this.receptRepository = receptRepository;
         this.ratingRepository = ratingRepository;
     }
+
     // Pridobi vse recepte
     public List<Recept> getAllRecepti() {
         return receptRepository.findAll();
@@ -63,14 +72,12 @@ public class ReceptService {
         }
     }
 
-    // Pridobi vse komentarje za recept
-    // Fetch comments for a specific recipe
-    public List<Comment> getComments(Long recipeId) {
-        return commentRepository.findByRecept_Id(recipeId);
-    }
-
-    // Add a comment to a specific recipe
+    // Dodaj komentar receptu
     public Comment addComment(Long recipeId, Long userId, String content) {
+        if (commentRepository == null) {
+            throw new RuntimeException("CommentRepository is not initialized");
+        }
+
         Recept recept = receptRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
@@ -83,7 +90,15 @@ public class ReceptService {
         return commentRepository.save(comment);
     }
 
+    // Pridobi vse komentarje za recept
+    public List<Comment> findCommentsByReceptId(Long receptId) {
+        if (commentRepository == null) {
+            throw new RuntimeException("CommentRepository is not initialized");
+        }
+        return commentRepository.findByRecept_Id(receptId);
+    }
 
+    // Posodobi ali dodaj oceno
     public Rating addOrUpdateRating(Long recipeId, Long userId, int rating) {
         Recept recept = receptRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
@@ -103,7 +118,7 @@ public class ReceptService {
         return ratingRepository.save(newRating);
     }
 
-
+    // Generiranje PDF-ja
     public byte[] generatePDF(Recept recept) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document();
@@ -143,4 +158,3 @@ public class ReceptService {
         }
     }
 }
-

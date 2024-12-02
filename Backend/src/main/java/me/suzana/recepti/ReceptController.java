@@ -50,12 +50,16 @@ public class ReceptController {
     }
 
     // Pridobi komentarje za recept
-    // Fetch comments for a recipe
     @GetMapping("/{recipeId}/comments")
     public List<Comment> getCommentsForRecipe(@PathVariable Long recipeId) {
-        return receptService.getComments(recipeId);
-    }
+        List<Comment> comments = receptService.findCommentsByReceptId(recipeId);
 
+        if (comments.isEmpty()) {
+            throw new RuntimeException("No comments found for this recipe.");
+        }
+
+        return comments;
+    }
 
     @PostMapping("/{recipeId}/comments")
     public Comment addCommentToRecipe(
