@@ -123,11 +123,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version> <!-- Prepričaj se, da uporabljaš vsaj to različico -->
+                <version>3.11.0</version> <!-- Ensure you're using at least this version -->
                 <configuration>
                     <release>22</release>
                     <compilerArgs>
-                        <arg>--enable-preview</arg> <!-- Popravljeno! -->
+                        <!-- Only include if you're using preview features -->
+                        <arg>--enable-preview</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
