@@ -113,28 +113,24 @@
 
     <build>
         <plugins>
+            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>17</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version> <!-- Prepričaj se, da uporabljaš vsaj to različico -->
                 <configuration>
                     <release>22</release>
                     <compilerArgs>
-                        --enable-preview
+                        <arg>--enable-preview</arg> <!-- Popravljeno! -->
                     </compilerArgs>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
