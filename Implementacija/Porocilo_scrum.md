@@ -23,3 +23,5 @@
 - Naloge so ustrezno ocenjene z uporabo metode Planning Poker.
 - **1. naloga** (Dodaj vhodno polje za število porcij) je bila uspešno implementirana v javascriptu.
 - **2. naloga** (Dodaj logiko za prilagoditev) sta uspešno implementirani. Implementacija logike prilagoditve omogoča pravilno preračunavanje količin glede na število porcij.
+- **3. naloga** (Posodobi prikaz) je uspešno implementirana. Prikaz sestavin se zdaj uspešno dinamično posodoblja glede na število izbranih porcij.
+- **4. naloga** (Testiranje in odpravljanje napak) je bila uspešno izvedena. Funkcionalnosti za prilagoditev števila porcij in dinamično posodabljanje po odpravljanju hroščev delujeta po načrtu.
