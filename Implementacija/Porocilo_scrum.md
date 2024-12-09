@@ -7,13 +7,13 @@
 
 | **ID** | **Naloga**                              | **Stanje**    | **Porabljen čas** | **Story Points (SP)** |
 |--------|-----------------------------------------|---------------|-------------------|------------------------|
-| 1      | Dodaj vhodno polje za število porcij    | ✅ Done       | 15 minut          | 2 SP                  |
-| 2      | Dodaj logiko za prilagoditev            | ✅ Done       | 1  ura            | 5 SP                  |
-| 3      | Posodobi prikaz                         | ✅ Done       | 45 minut          | 3 SP                  |
-| 4      | Testiranje in odpravljanje napak        | ✅ Done       | 10 minut          | 2 SP                  |
-| 5      | Dodaj CSS za vhodno polje               | ToDo          | -                 | 1 SP                  |
-| 6      | Dokumentacija (Scrum poročilo)          | In Progress   | -                 | 1 SP                  |
-| 7      | Upravljanje na GitHub tabli             | In Progress   | -                 | 1 SP                  |
+| 1      | Dodaj vhodno polje za število porcij    | ✅ Done        | 15 minut          | 2 SP                  |
+| 2      | Dodaj logiko za prilagoditev            | ✅ Done        | 1  ura            | 5 SP                  |
+| 3      | Posodobi prikaz                         | ✅ Done        | 45 minut          | 3 SP                  |
+| 4      | Testiranje in odpravljanje napak        | ✅ Done        | 10 minut          | 2 SP                  |
+| 5      | Dodaj CSS za vhodno polje               | ✅ Done        | 20 minut          | 1 SP                  |
+| 6      | Dokumentacija (Scrum poročilo)          | ✅ Done        | 30 minut          | 1 SP                  |
+| 7      | Upravljanje na GitHub tabli             | ✅ Done        | 15 minut          | 1 SP                  |
 
 ## Težave
 - Do zdaj ni bilo večjih težav, razen manjših nejasnosti pri določanju robnih primerov za testiranje.
@@ -25,3 +25,6 @@
 - **2. naloga** (Dodaj logiko za prilagoditev) sta uspešno implementirani. Implementacija logike prilagoditve omogoča pravilno preračunavanje količin glede na število porcij.
 - **3. naloga** (Posodobi prikaz) je uspešno implementirana. Prikaz sestavin se zdaj uspešno dinamično posodoblja glede na število izbranih porcij.
 - **4. naloga** (Testiranje in odpravljanje napak) je bila uspešno izvedena. Funkcionalnosti za prilagoditev števila porcij in dinamično posodabljanje po odpravljanju hroščev delujeta po načrtu.
+- **5. naloga** (Dodaj CSS za vhodno polje): Implementirali smo osnovno oblikovanje vhodnega polja za število porcij, da se vizualno ujema s preostalim delom uporabniškega vmesnika. 
+- **6. naloga** (Dokumentacija - Scrum poročilo): Posodobili smo Scrum poročilo z informacijami o napredku in zaključku posameznih nalog, vključno z dodajanjem povzetkov za naloge 3 in 4. 
+- **7. naloga** (Upravljanje na GitHub tabli): Posodobili smo stanje nalog na GitHub tabli, označili dokončane naloge in prilagodili prioritete za preostale naloge. 
