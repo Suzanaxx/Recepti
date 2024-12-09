@@ -47,7 +47,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Posodobitev prikaza sestavin
     const sestavineElement = document.getElementById(`sestavine-${recipeId}`);
     if (sestavineElement) {
-      sestavineElement.innerText = prilagojeneSestavine;
+        sestavineElement.innerText = prilagojeneSestavine;
+        sestavineElement.classList.add("sestavine-posodobljene"); // Dodaj poudarek
+        setTimeout(() => sestavineElement.classList.remove("sestavine-posodobljene"), 1500); // Odstrani poudarek po 1.5 sekunde
     }
   }
 
@@ -55,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function renderRecepti(receptiToRender) {
     receptiContainer.innerHTML = "";
     receptiToRender.forEach((recept) => {
-      receptiContainer.innerHTML += `
+        receptiContainer.innerHTML += `
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
                     <img src="${recept.slika}" class="card-img-top" alt="Slika recepta">
@@ -63,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h5 class="card-title">${recept.ime}</h5>
                         <p class="card-text">${recept.opis}</p>
                         <h6 class="mt-2">Sestavine:</h6>
-                        <p id="sestavine-${recept.id}">${recept.sestavine}</p>
+                        <p id="sestavine-${recept.id}" class="sestavine-prikaz">${recept.sestavine}</p>
                         <h6 class="mt-2">Navodila:</h6>
                         <p>${recept.navodila}</p>
 
@@ -105,18 +107,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>`;
 
-      fetchComments(recept.id); // Pridobi komentarje za vsak recept
-      submitRating(recept.id); // Submit rating for each recipe
-      populateForm(
-        recept.idje,
-        recept.ime,
-        recept.opis,
-        recept.sestavine,
-        recept.navodila,
-        recept.slika
-      ); // Fill form for each recipe
+        fetchComments(recept.id); // Pridobi komentarje za vsak recept
+        submitRating(recept.id); // Submit rating for each recipe
+        populateForm(
+            recept.idje,
+            recept.ime,
+            recept.opis,
+            recept.sestavine,
+            recept.navodila,
+            recept.slika
+        ); // Fill form for each recipe
     });
-  }
+}
 
   // Funkcija za dodajanje novega komentarja
   function fetchComments(recipeId) {
