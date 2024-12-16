@@ -127,4 +127,18 @@ public class ReceptController {
                 .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
+
+    @GetMapping("/{idje}/nutrition")
+    public ResponseEntity<Map<String, Object>> calculateNutritionalValuesByIngredients(
+            @PathVariable String idje,
+            @RequestParam int servings
+    ) {
+        try {
+            Map<String, Object> nutritionalValues = receptService.calculateNutritionalValuesByIngredients(idje, servings);
+            return ResponseEntity.ok(nutritionalValues);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
 }

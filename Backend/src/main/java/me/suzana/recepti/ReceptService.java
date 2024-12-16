@@ -7,7 +7,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReceptService {
@@ -175,5 +177,81 @@ public class ReceptService {
         } catch (Exception e) {
             throw new RuntimeException("Error generating PDF", e);
         }
+    }
+
+    public Map<String, Object> calculateNutritionalValuesByIngredients(String idje, int servings) {
+        // Check for valid servings
+        if (servings < 1) {
+            throw new RuntimeException("Število porcij mora biti vsaj 1.");
+        }
+
+        // Retrieve the recipe from the repository
+        Recept recept = receptRepository.findByIdje(idje);
+        if (recept == null) {
+            throw new RuntimeException("Recept ni najden.");
+        }
+
+        // Extract the ingredients from the recipe
+        String[] ingredientList = recept.getSestavine().split(",");
+
+        // Initialize total nutritional values
+        double totalCalories = 0.0;
+        double totalProteins = 0.0;
+        double totalCarbohydrates = 0.0;
+        double totalFats = 0.0;
+        double totalFibers = 0.0;
+
+        for (String ingredient : ingredientList) {
+            // Example ingredient format: "200 g chicken breast"
+            String[] parts = ingredient.trim().split(" ", 3); // [quantity, unit, name]
+            if (parts.length < 2) continue;
+
+            try {
+                double quantity = Double.parseDouble(parts[0]); // Extract quantity
+                String unit = parts[1]; // Extract unit (e.g., g, ml)
+                String name = parts.length > 2 ? parts[2] : "Unknown"; // Ingredient name (optional)
+
+                // Placeholder logic for nutritional values, in reality, you would look this up
+                double caloriesPerUnit = 2.0; // Example: 2 calories per gram
+                double proteinsPerUnit = 0.1; // Example: 0.1g proteins per gram
+                double carbsPerUnit = 0.2; // Example: 0.2g carbs per gram
+                double fatsPerUnit = 0.05; // Example: 0.05g fats per gram
+                double fibersPerUnit = 0.02; // Example: 0.02g fibers per gram
+
+                // Calculate total values for the ingredient
+                totalCalories += caloriesPerUnit * quantity;
+                totalProteins += proteinsPerUnit * quantity;
+                totalCarbohydrates += carbsPerUnit * quantity;
+                totalFats += fatsPerUnit * quantity;
+                totalFibers += fibersPerUnit * quantity;
+            } catch (NumberFormatException e) {
+                // If parsing fails, continue to the next ingredient
+                continue;
+            }
+        }
+
+        // Calculate per-serving values
+        double caloriesPerServing = totalCalories / servings;
+        double proteinsPerServing = totalProteins / servings;
+        double carbsPerServing = totalCarbohydrates / servings;
+        double fatsPerServing = totalFats / servings;
+        double fibersPerServing = totalFibers / servings;
+
+        // Prepare the response
+        Map<String, Object> response = new HashMap<>();
+        response.put("recipeName", recept.getIme());
+        response.put("servings", servings);
+        response.put("totalCalories", totalCalories);
+        response.put("caloriesPerServing", caloriesPerServing);
+        response.put("totalProteins", totalProteins);
+        response.put("proteinsPerServing", proteinsPerServing);
+        response.put("totalCarbohydrates", totalCarbohydrates);
+        response.put("carbohydratesPerServing", carbsPerServing);
+        response.put("totalFats", totalFats);
+        response.put("fatsPerServing", fatsPerServing);
+        response.put("totalFibers", totalFibers);
+        response.put("fibersPerServing", fibersPerServing);
+
+        return response;
     }
 }
