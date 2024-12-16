@@ -1,54 +1,101 @@
--- Uporaba baze
 USE data;
 
--- Tabela za uporabnike
-CREATE TABLE IF NOT EXISTS users (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,       -- Primarni ključ (INT UNSIGNED za skladnost)
-    username VARCHAR(50) NOT NULL UNIQUE,            -- Unikatno uporabniško ime
-    email VARCHAR(100) NOT NULL UNIQUE,              -- Unikaten email
-    password VARCHAR(255) NOT NULL                  -- Geslo (hashirano)
+create table if not exists recepti
+(
+    id           int unsigned auto_increment
+        primary key,
+    idje         varchar(255) not null,
+    ime          varchar(255) not null,
+    opis         varchar(255) null,
+    sestavine    varchar(255) null,
+    navodila     varchar(255) null,
+    slika        varchar(255) null,
+    kalorije     double       null,
+    proteini     double       null,
+    karbohidrati double       null,
+    mascobe      double       null,
+    vlaknine     double       null,
+    constraint idje
+        unique (idje)
 );
 
--- Tabela za recepte
-CREATE TABLE IF NOT EXISTS recepti (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,       -- Primarni ključ (INT UNSIGNED za skladnost)
-    idje VARCHAR(20) NOT NULL UNIQUE,                -- Unikatna oznaka recepta
-    ime VARCHAR(255) NOT NULL,                       -- Ime recepta
-    opis TEXT,                                       -- Kratek opis recepta
-    sestavine TEXT,                                  -- Sestavine recepta
-    navodila TEXT,                                   -- Navodila za pripravo recepta
-    slika VARCHAR(255)                               -- URL slike recepta
+create table if not exists users
+(
+    id         int unsigned auto_increment
+        primary key,
+    username   varchar(50)                         not null,
+    email      varchar(100)                        not null,
+    password   varchar(255)                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint email
+        unique (email),
+    constraint username
+        unique (username)
 );
 
--- Tabela za komentarje
-CREATE TABLE IF NOT EXISTS comments (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,       -- Primarni ključ
-    recipe_id INT UNSIGNED NOT NULL,                  -- Tuji ključ na tabelo recepti
-    user_id INT UNSIGNED NOT NULL,                    -- Tuji ključ na tabelo users
-    comment TEXT NOT NULL,                            -- Besedilo komentarja
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Datum komentarja
-    FOREIGN KEY (recipe_id) REFERENCES recepti(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+create table if not exists bookmarks
+(
+    id         int unsigned auto_increment
+        primary key,
+    recipe_id  int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint bookmarks_ibfk_1
+        foreign key (recipe_id) references recepti (id)
+            on delete cascade,
+    constraint bookmarks_ibfk_2
+        foreign key (user_id) references users (id)
+            on delete cascade
 );
 
--- Tabela za ocene
-CREATE TABLE IF NOT EXISTS ratings (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,       -- Primarni ključ
-    recipe_id INT UNSIGNED NOT NULL,                  -- Tuji ključ na tabelo recepti
-    user_id INT UNSIGNED NOT NULL,                    -- Tuji ključ na tabelo users
-    rating TINYINT UNSIGNED CHECK (rating BETWEEN 1 AND 5), -- Ocena (1-5)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Datum ocene
-    FOREIGN KEY (recipe_id) REFERENCES recepti(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+create index recipe_id
+    on bookmarks (recipe_id);
+
+create index user_id
+    on bookmarks (user_id);
+
+create table if not exists comments
+(
+    id         bigint auto_increment
+        primary key,
+    recipe_id  int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    comment    varchar(255)                        not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint comments_ibfk_1
+        foreign key (recipe_id) references recepti (id)
+            on delete cascade,
+    constraint comments_ibfk_2
+        foreign key (user_id) references users (id)
+            on delete cascade
 );
 
--- Tabela za priljubljene recepte
-CREATE TABLE IF NOT EXISTS bookmarks (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,       -- Primarni ključ
-    recipe_id INT UNSIGNED NOT NULL,                  -- Tuji ključ na tabelo recepti
-    user_id INT UNSIGNED NOT NULL,                    -- Tuji ključ na tabelo users
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,   -- Datum dodajanja
-    FOREIGN KEY (recipe_id) REFERENCES recepti(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+create index recipe_id
+    on comments (recipe_id);
+
+create index user_id
+    on comments (user_id);
+
+create table if not exists ratings
+(
+    id         bigint auto_increment
+        primary key,
+    recipe_id  int unsigned                        not null,
+    user_id    int unsigned                        not null,
+    rating     int                                 not null,
+    created_at timestamp default CURRENT_TIMESTAMP null,
+    constraint ratings_ibfk_1
+        foreign key (recipe_id) references recepti (id)
+            on delete cascade,
+    constraint ratings_ibfk_2
+        foreign key (user_id) references users (id)
+            on delete cascade,
+    check (`rating` between 1 and 5)
 );
+
+create index recipe_id
+    on ratings (recipe_id);
+
+create index user_id
+    on ratings (user_id);
 
