@@ -27,7 +27,23 @@ public class Recept {
     @Column
     private String slika;
 
-    // Getters and Setters
+    @Column(nullable = false)
+    private int kalorije;
+
+    @Column(nullable = false)
+    private float proteini;
+
+    @Column(nullable = false)
+    private float karbohidrati;
+
+    @Column(nullable = false)
+    private float mascobe;
+
+    @Column(nullable = false)
+    private float vlaknine;
+
+    // 🔥 Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -82,5 +98,45 @@ public class Recept {
 
     public void setSlika(String slika) {
         this.slika = slika;
+    }
+
+    public int getKalorije() {
+        return kalorije;
+    }
+
+    public void setKalorije(int kalorije) {
+        this.kalorije = kalorije;
+    }
+
+    public float getProteini() {
+        return proteini;
+    }
+
+    public void setProteini(float proteini) {
+        this.proteini = proteini;
+    }
+
+    public float getKarbohidrati() {
+        return karbohidrati;
+    }
+
+    public void setKarbohidrati(float karbohidrati) {
+        this.karbohidrati = karbohidrati;
+    }
+
+    public float getMascobe() {
+        return mascobe;
+    }
+
+    public void setMascobe(float mascobe) {
+        this.mascobe = mascobe;
+    }
+
+    public float getVlaknine() {
+        return vlaknine;
+    }
+
+    public void setVlaknine(float vlaknine) {
+        this.vlaknine = vlaknine;
     }
 }

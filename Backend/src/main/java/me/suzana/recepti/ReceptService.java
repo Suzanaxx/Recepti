@@ -35,36 +35,45 @@ public class ReceptService {
         this.ratingRepository = ratingRepository;
     }
 
-    // Pridobi vse recepte
+    // 📘 Pridobi vse recepte (vključno s hranilnimi vrednostmi)
     public List<Recept> getAllRecepti() {
         return receptRepository.findAll();
     }
 
-    // Pridobi recept po ID-ju
+    // 📘 Pridobi recept po ID-ju (vključno s hranilnimi vrednostmi)
     public Recept getReceptByIdje(String idje) {
         return receptRepository.findByIdje(idje);
     }
 
-    // Ustvari nov recept
+    // 📘 Ustvari nov recept (vključno s hranilnimi vrednostmi)
     public Recept createRecept(Recept recept) {
+        // Ustvari nov recept s hranilnimi vrednostmi
         return receptRepository.save(recept);
     }
 
-    // Posodobi obstoječi recept
-    public Recept updateRecept(String idje, Recept recept) {
+    // 📘 Posodobi obstoječi recept (vključno s hranilnimi vrednostmi)
+    public Recept updateRecept(String idje, Recept receptPodatki) {
         Recept existingRecept = receptRepository.findByIdje(idje);
         if (existingRecept != null) {
-            existingRecept.setIme(recept.getIme());
-            existingRecept.setOpis(recept.getOpis());
-            existingRecept.setSestavine(recept.getSestavine());
-            existingRecept.setNavodila(recept.getNavodila());
-            existingRecept.setSlika(recept.getSlika());
+            existingRecept.setIme(receptPodatki.getIme());
+            existingRecept.setOpis(receptPodatki.getOpis());
+            existingRecept.setSestavine(receptPodatki.getSestavine());
+            existingRecept.setNavodila(receptPodatki.getNavodila());
+            existingRecept.setSlika(receptPodatki.getSlika());
+
+            // Posodobitev hranilnih vrednosti
+            existingRecept.setKalorije(receptPodatki.getKalorije());
+            existingRecept.setProteini(receptPodatki.getProteini());
+            existingRecept.setKarbohidrati(receptPodatki.getKarbohidrati());
+            existingRecept.setMascobe(receptPodatki.getMascobe());
+            existingRecept.setVlaknine(receptPodatki.getVlaknine());
+
             return receptRepository.save(existingRecept);
         }
         return null;
     }
 
-    // Izbriši recept
+    // 📘 Izbriši recept
     public void deleteRecept(String idje) {
         Recept existingRecept = receptRepository.findByIdje(idje);
         if (existingRecept != null) {
@@ -72,7 +81,7 @@ public class ReceptService {
         }
     }
 
-    // Dodaj komentar receptu
+    // 📘 Dodaj komentar receptu
     public Comment addComment(Long recipeId, Long userId, String content) {
         if (commentRepository == null) {
             throw new RuntimeException("CommentRepository is not initialized");
@@ -90,7 +99,7 @@ public class ReceptService {
         return commentRepository.save(comment);
     }
 
-    // Pridobi vse komentarje za recept
+    // 📘 Pridobi vse komentarje za recept
     public List<Comment> findCommentsByReceptId(Long receptId) {
         if (commentRepository == null) {
             throw new RuntimeException("CommentRepository is not initialized");
@@ -98,7 +107,7 @@ public class ReceptService {
         return commentRepository.findByRecept_Id(receptId);
     }
 
-    // Posodobi ali dodaj oceno
+    // 📘 Posodobi ali dodaj oceno
     public Rating addOrUpdateRating(Long recipeId, Long userId, int rating) {
         Recept recept = receptRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
@@ -118,7 +127,7 @@ public class ReceptService {
         return ratingRepository.save(newRating);
     }
 
-    // Generiranje PDF-ja
+    // 📘 Generiranje PDF-ja (vključno s hranilnimi vrednostmi)
     public byte[] generatePDF(Recept recept) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document();
@@ -149,6 +158,16 @@ public class ReceptService {
             // Add Instructions
             document.add(new Paragraph("Instructions:", sectionFont));
             document.add(new Paragraph(recept.getNavodila() != null ? recept.getNavodila() : "No instructions available"));
+
+            document.add(new Paragraph(" ")); // Blank line
+
+            // Dodaj hranilne vrednosti
+            document.add(new Paragraph("Nutritional Information (per serving):", sectionFont));
+            document.add(new Paragraph("Calories: " + recept.getKalorije() + " kcal"));
+            document.add(new Paragraph("Proteins: " + recept.getProteini() + " g"));
+            document.add(new Paragraph("Carbohydrates: " + recept.getKarbohidrati() + " g"));
+            document.add(new Paragraph("Fats: " + recept.getMascobe() + " g"));
+            document.add(new Paragraph("Fibers: " + recept.getVlaknine() + " g"));
 
             document.close();
 

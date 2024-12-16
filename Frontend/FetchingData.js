@@ -54,70 +54,81 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Funkcija za prikaz receptov
-  function renderRecepti(receptiToRender) {
-    receptiContainer.innerHTML = "";
-    receptiToRender.forEach((recept) => {
-        receptiContainer.innerHTML += `
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="${recept.slika}" class="card-img-top" alt="Slika recepta">
-                    <div class="card-body">
-                        <h5 class="card-title">${recept.ime}</h5>
-                        <p class="card-text">${recept.opis}</p>
-                        <h6 class="mt-2">Sestavine:</h6>
-                        <p id="sestavine-${recept.id}" class="sestavine-prikaz">${recept.sestavine}</p>
-                        <h6 class="mt-2">Navodila:</h6>
-                        <p>${recept.navodila}</p>
+function renderRecepti(receptiToRender) {
+  receptiContainer.innerHTML = "";
+  receptiToRender.forEach((recept) => {
+      receptiContainer.innerHTML += `
+          <div class="col-md-4 mb-4">
+              <div class="card h-100">
+                  <img src="${recept.slika}" class="card-img-top" alt="Slika recepta">
+                  <div class="card-body">
+                      <h5 class="card-title">${recept.ime}</h5>
+                      <p class="card-text">${recept.opis}</p>
 
-                        <div class="rating-container" style="max-width: 50%; margin: auto;">
-                            <label for="rating-select">Rate this Recipe:</label>
-                            <select id="rating-select-${recept.id}" class="form-select">
-                                <option value="" selected disabled>Select Rating</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                            <button class="btn btn-primary mt-2" onclick="submitRating(${recept.id})">Submit Rating</button>
-                            <div id="rating-feedback-${recept.id}" class="mt-2" style="font-size: 0.9em;"></div>
-                        </div>
+                      <h6 class="mt-2">Sestavine:</h6>
+                      <p id="sestavine-${recept.id}" class="sestavine-prikaz">${recept.sestavine}</p>
 
-                        <!-- Komentarji -->
-                        <h6 class="mt-4">Komentarji:</h6>
-                        <div id="comments-${recept.id}" class="mb-3">
-                            <!-- Komentarji bodo prikazani tukaj -->
-                        </div>
-                        <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
-                        <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
-                    </div>
-                    
-                    <div class="card-footer">
-                        <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
-                        <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
-                        <button class="btn btn-success" onclick="exportToPDF('${recept.idje}')">Izvozi PDF</button>
+                      <h6 class="mt-2">Hranilne vrednosti na porcijo:</h6>
+                      <ul class="list-unstyled">
+                          <li><strong>Kalorije:</strong> ${recept.kalorije} kcal</li>
+                          <li><strong>Proteini:</strong> ${recept.proteini} g</li>
+                          <li><strong>Ogljikovi hidrati:</strong> ${recept.karbohidrati} g</li>
+                          <li><strong>Maščobe:</strong> ${recept.mascobe} g</li>
+                          <li><strong>Vlaknine:</strong> ${recept.vlaknine} g</li>
+                      </ul>
 
-                        <!-- Gumb za prilagoditev števila porcij -->
-                        <div class="d-inline-flex align-items-center mt-2">
-                            <label for="porcije-${recept.id}" class="me-2 mb-0">Porcije:</label>
-                            <input type="number" id="porcije-${recept.id}" value="4" min="1" max="20" step="1" class="form-control w-50 me-2">
-                            <button class="btn btn-primary" onclick="prilagodiSestavine(${recept.id})">Prilagodi</button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+                      <h6 class="mt-2">Navodila:</h6>
+                      <p>${recept.navodila}</p>
 
-        fetchComments(recept.id); // Pridobi komentarje za vsak recept
-        submitRating(recept.id); // Submit rating for each recipe
-        populateForm(
-            recept.idje,
-            recept.ime,
-            recept.opis,
-            recept.sestavine,
-            recept.navodila,
-            recept.slika
-        ); // Fill form for each recipe
-    });
+                      <div class="rating-container" style="max-width: 50%; margin: auto;">
+                          <label for="rating-select">Rate this Recipe:</label>
+                          <select id="rating-select-${recept.id}" class="form-select">
+                              <option value="" selected disabled>Select Rating</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                          </select>
+                          <button class="btn btn-primary mt-2" onclick="submitRating(${recept.id})">Submit Rating</button>
+                          <div id="rating-feedback-${recept.id}" class="mt-2" style="font-size: 0.9em;"></div>
+                      </div>
+
+                      <!-- Komentarji -->
+                      <h6 class="mt-4">Komentarji:</h6>
+                      <div id="comments-${recept.id}" class="mb-3">
+                          <!-- Komentarji bodo prikazani tukaj -->
+                      </div>
+                      <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
+                      <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
+                  </div>
+                  
+                  <div class="card-footer">
+                      <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
+                      <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
+                      <button class="btn btn-success" onclick="exportToPDF('${recept.idje}')">Izvozi PDF</button>
+
+                      <!-- Gumb za prilagoditev števila porcij -->
+                      <div class="d-inline-flex align-items-center mt-2">
+                          <label for="porcije-${recept.id}" class="me-2 mb-0">Porcije:</label>
+                          <input type="number" id="porcije-${recept.id}" value="4" min="1" max="20" step="1" class="form-control w-50 me-2">
+                          <button class="btn btn-primary" onclick="prilagodiSestavine(${recept.id})">Prilagodi</button>
+                      </div>
+                  </div>
+              </div>
+          </div>`;
+
+      fetchComments(recept.id); // Pridobi komentarje za vsak recept
+      submitRating(recept.id); // Submit rating for each recipe
+      populateForm(
+          recept.idje,
+          recept.ime,
+          recept.opis,
+          recept.sestavine,
+          recept.navodila,
+          recept.slika
+      ); // Fill form for each recipe
+  });
 }
 
   // Funkcija za dodajanje novega komentarja
