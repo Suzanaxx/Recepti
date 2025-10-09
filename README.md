@@ -31,6 +31,7 @@ Vsebuje datoteke frontend-a, ki jih upravlja Node.js.
 - `index.html`: Glavna HTML datoteka z obrazcem za dodajanje in prikaz receptov.
 - `FetchingData.js`: JavaScript datoteka za obravnavo API klicev in dinamičen prikaz receptov v uporabniškem vmesniku.
 - `data.sql`: Primer podatkov za inicializacijo MySQL baze podatkov.
+- Odprite data.sql in najprej zaženite "create table if not exists data;" in potem to izbrišite in pustite vse ostalo
 - `package.json` in `package-lock.json`: Datoteke za upravljanje odvisnosti frontend-a.
 
 ## Namestitev in nastavitev
@@ -43,7 +44,8 @@ Vsebuje datoteke frontend-a, ki jih upravlja Node.js.
 ### Namestitev Backend-a
 1. Pojdite v mapo `Backend`.
 2. Nastavite MySQL poverilnice v `application.properties`.
-3. Zaženite aplikacijo:
+3. Pazite da je vse v JAVA 23!
+4. Zaženite aplikacijo:
    
 `mvn spring-boot:run`
 
