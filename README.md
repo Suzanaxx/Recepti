@@ -11,6 +11,36 @@ To je spletna aplikacija za upravljanje receptov, kjer lahko uporabniki dodajajo
 - **Funkcionalnost iskanja**: Iskanje receptov po imenu.
 - **Odziven vmesnik**: Aplikacija uporablja Bootstrap za prijazno obliko na mobilnih napravah.
 
+## Namestitev in nastavitev
+
+### Zahteve
+- **Java** in **Maven** za Spring Boot backend
+- **Node.js** in **npm** za frontend
+- **MySQL** za bazo podatkov
+
+### Nastavitev baze podatkov
+Odprite MySQL Workbench in odprite skripto data.sql, ki se nahaja v Frontend mapi
+Na začetku dodajte "Create database if not exists data" in potem to izbrišite
+Zaženite SQL ukaze iz data.sql za nastavitev začetne sheme in podatkov
+
+### Namestitev Backend-a
+1. Pojdite v mapo `Backend`.
+2. Nastavite MySQL poverilnice v `application.properties`.
+3. Pazite da je vse v JAVA 23!
+4. Zaženite aplikacijo:
+   
+`mvn spring-boot:run`
+
+### Namestitev Frontend-a  
+Pojdite v mapo `Frontend`.  
+Namestite odvisnosti:  
+
+`npm install`
+
+Zaženite frontend strežnik:
+
+`npm start`
+
 ## Struktura projekta
 Projekt je organiziran v naslednje direktorije:
 
@@ -33,35 +63,6 @@ Vsebuje datoteke frontend-a, ki jih upravlja Node.js.
 - `data.sql`: Primer podatkov za inicializacijo MySQL baze podatkov.
 - Odprite data.sql in najprej zaženite "create table if not exists data;" in potem to izbrišite in pustite vse ostalo
 - `package.json` in `package-lock.json`: Datoteke za upravljanje odvisnosti frontend-a.
-
-## Namestitev in nastavitev
-
-### Zahteve
-- **Java** in **Maven** za Spring Boot backend
-- **Node.js** in **npm** za frontend
-- **MySQL** za bazo podatkov
-
-### Namestitev Backend-a
-1. Pojdite v mapo `Backend`.
-2. Nastavite MySQL poverilnice v `application.properties`.
-3. Pazite da je vse v JAVA 23!
-4. Zaženite aplikacijo:
-   
-`mvn spring-boot:run`
-
-### Namestitev Frontend-a  
-Pojdite v mapo `Frontend`.  
-Namestite odvisnosti:  
-
-`npm install`
-
-Zaženite frontend strežnik:
-
-`npm start`
-
-### Nastavitev baze podatkov
-Ustvarite MySQL bazo za aplikacijo.
-Zaženite SQL ukaze iz data.sql za nastavitev začetne sheme in podatkov
 
 ## API Končne točke
 Tukaj so glavne API končne točke, ki jih uporablja aplikacija:
