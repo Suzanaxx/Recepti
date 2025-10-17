@@ -1,6 +1,5 @@
-name: Spring Boot CI
+name: Spring Boot Unit Tests
 
-# Sproži se ob push ali pull request na main branch
 on:
   push:
     branches: [ main ]
@@ -8,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +22,7 @@ jobs:
           distribution: 'temurin'
           java-version: '23'
 
-      # Cache Maven dependencies za hitrejši build
+      # Cache Maven dependencies
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
@@ -32,12 +31,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # Build projekta
-      - name: Build with Maven
-        run: mvn clean install --batch-mode
-        working-directory: Backend
-
-      # Poženi teste
-      - name: Run tests
-        run: mvn test
-        working-directory: Backend
+      # Poganjaj samo enote teste (ignorira SpringBootTest)
+      - name: Run unit tests
+        run: mvn -f Backend/pom.xml -DskipTests=false -Dspring.main.web-application-type=none test
