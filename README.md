@@ -121,15 +121,90 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 
 ![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
 
-## Testiranje
-Projekt vključuje enotne teste za naslednje funkcionalnosti:
-- **Ocenjevanje receptov (rating)**: Preverjanje dodajanja in obravnave napak.
+## **Testiranje**
 
-### Zagon testov
-Za zagon vseh testov uporabite:
+Projekt vključuje **enotne teste** za preverjanje pravilnosti ključnih funkcionalnosti backend sistema.  
+Testi pokrivajo področja, kot so **ocenjevanje receptov**, **komentarji**, **PDF izvoz**, **prehranske vrednosti** in **uporabniška avtentikacija**.
+
+---
+
+### **Poročilo o testiranju**
+
+Projekt vsebuje **5 testnih razredov** in skupaj **17 uspešno izvedenih testov**, ki zagotavljajo stabilnost in pravilnost logike aplikacije.
+
+---
+
+### **1. NutritionCalculatorServiceTest**
+**Namen:** preverjanje izračuna prehranskih vrednosti na porcijo.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testCalculateNutrition` | Sestavine: *Chicken (200 g, 2 kcal/g, 0.1 prot/g)*, *Rice (100 g, 1.3 kcal/g, 0.03 prot/g)*, 2 porciji | Skupne kalorije = **460**, beljakovine = **11.5 g/porcijo**, objekt `summary` ni `null` |
+
+---
+
+### **2. ReceptServiceCommentTest**
+**Namen:** preverjanje dodajanja in pridobivanja komentarjev.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testAddComment_Success` | `receptId = 1`, `userId = 1`, komentar = "Odličen recept!" | Komentar uspešno shranjen, `save()` poklican **1×** |
+| `testAddComment_ReceptNotFound` | `receptId = 1` *(neobstoječ)* | `RuntimeException("Recipe not found")` |
+| `testFindCommentsByReceptId_Success` | `receptId = 1` | Vrnjena **2 komentarja** ("Prvi", "Drugi") |
+| `testFindCommentsByReceptId_NoComments` | `receptId = 1` | **Prazen seznam komentarjev** |
+
+---
+
+### **3. ReceptServiceExportTest**
+**Namen:** preverjanje generiranja PDF datotek iz receptov.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testGeneratePDF_Success` | Recept z imenom, opisom, sestavinami in navodili | PDF datoteka (byte array) vsebuje vse podatke |
+| `testGeneratePDF_EmptyFields` | Recept brez opisa, sestavin in navodil | PDF vsebuje privzeta besedila: *“No description / ingredients / instructions available”* |
+
+---
+
+### **4. ReceptServiceTest**
+**Namen:** preverjanje dodajanja ocen in izračuna prehranskih vrednosti.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testAddOrUpdateRating_Success` | `receptId = 1`, `userId = 1`, `rating = 5` | Shrani `Rating` objekt z oceno **5** |
+| `testAddOrUpdateRating_ReceptNotFound` | Neobstoječ recept | `RuntimeException("Recipe not found")` |
+| `testCalculateNutritionalValuesByIngredients_Success` | Recept `"R001"`, 4 porcij, sestavine z živili | `Map` z: `recipeName`, `servings`, `totalCalories > 0`, `caloriesPerServing > 0` |
+| `testCalculateNutritionalValuesByIngredients_InvalidServings` | `servings = 0` | `RuntimeException("Število porcij mora biti vsaj 1.")` |
+| `testCalculateNutritionalValuesByIngredients_RecipeNotFound` | Neobstoječ recept | `RuntimeException("Recept ni najden.")` |
+
+---
+
+### **5. UserServiceTest**
+**Namen:** preverjanje registracije in prijave uporabnikov.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testRegisterUserSuccess` | `"testuser"`, `"test@example.com"`, `"password"` | Ustvarjen `User` objekt z istim uporabniškim imenom |
+| `testLoginUserSuccess` | `"testuser"`, `"password"` | `Optional<User>` prisoten → uspešna prijava |
+
+---
+
+### **Povzetek testov**
+
+| Skupina testov | Št. testov | Namen |
+|:--|:--:|:--|
+| `NutritionCalculatorServiceTest` | 1 | Izračun prehranskih vrednosti |
+| `ReceptServiceCommentTest` | 4 | Dodajanje in iskanje komentarjev |
+| `ReceptServiceExportTest` | 2 | PDF generiranje receptov |
+| `ReceptServiceTest` | 5 | Ocene in izračuni |
+| `UserServiceTest` | 2 | Registracija in prijava uporabnikov |
+| **Skupaj** | **17** | Vsi testi uspešno izvedeni |
+
+---
+
+### **Zagon testov**
+
+Za zagon vseh testov uporabite ukaz:
+
 ```bash
 mvn test
-
-
-
 
