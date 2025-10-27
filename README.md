@@ -285,7 +285,8 @@ mvn test
 
 **Opombe:** Če filtriranje ne deluje, preveri delovanje funkcije handleSearch() in povezavo na /api/recepti/search.
 
-**Povzetek rezultatov**
+### Povzetek rezultatov
+
 |Funkcionalnost |	Status |	Opis |
 |:--|:--|:--|
 | Dodajanje recepta| Uspešno | Recept se shrani in prikaže v seznamu |
