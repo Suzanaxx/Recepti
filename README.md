@@ -121,7 +121,7 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 
 ![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
 
-## **Testiranje**
+## **Backend Testiranje**
 
 Projekt vključuje **enotne teste** za preverjanje pravilnosti ključnih funkcionalnosti backend sistema.  
 Testi pokrivajo področja, kot so **ocenjevanje receptov**, **komentarji**, **PDF izvoz**, **prehranske vrednosti** in **uporabniška avtentikacija**.
@@ -207,4 +207,93 @@ Za zagon vseh testov uporabite ukaz:
 
 ```bash
 mvn test
+```
+
+## **Frontend Testiranje - Testni Scenarij**
+
+- Oznaka: ReceptApp-TEST-Frontend-A5
+- Aplikacija: Upravljanje receptov
+- Verzija aplikacije: 1.0
+- Datum scenarija: 20. 10. 2025
+- Avtor: Mateja Kocbek
+- Referenca: /
+- Zahteve v SZPO: /
+
+**Namen:** Preveriti pravilno delovanje uporabniškega vmesnika aplikacije za upravljanje receptov.
+
+**Scenarij vključuje tri ključne funkcionalnosti:**
+1. Dodajanje novega recepta
+2. Urejanje obstoječega recepta
+3. Iskanje receptov po imenu
+
+**Predpogoji:**
+- Aplikacija je uspešno nameščena in dostopna v brskalniku.
+- Uporabnik ima dostop do obrazca za dodajanje in urejanje receptov.
+- V bazi je shranjen vsaj en recept (“Čokoladna torta”).
+
+### **Testni scenarij 1: Dodajanje novega recepta**
+
+**Kratek opis:** Preveriti, ali uporabnik lahko uspešno doda nov recept prek obrazca in ali se ta pravilno prikaže v seznamu receptov.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik odpre domačo stran aplikacije |	— | Prikaže se obrazec za dodajanje recepta |
+| 2 |	Uporabnik vnese ime recepta |	“Čokoladna torta” | Polje se pravilno izpolni |
+| 3 |	Uporabnik vnese opis | “Sočna torta s čokoladnim prelivom” | Besedilo se shrani v polje |
+| 4 |	Uporabnik vnese sestavine | “Moka, sladkor, jajca, čokolada” |	Seznam se prikaže pravilno |
+| 5 |	Uporabnik vnese navodila |	“Zmešaj sestavine in peci 30 min pri 180°C” | Polje se izpolni |
+| 6 |	Klik na gumb ‘Shrani’ |	— | Sistem shrani recept in prikaže potrditveno sporočilo “Recept uspešno dodan” |
+| 7 |	Preverjanje prikaza novega recepta v seznamu | — |	Novi recept “Čokoladna torta” se prikaže v seznamu |
+
+**Pogoji uspešnega zaključka:**
+- Novi recept se shrani v bazo.
+- Recept se prikaže v seznamu obstoječih receptov brez napak.
+
+**Opombe:** Če sistem ne prikaže potrditvenega sporočila, preveri povezavo med frontendom in backend API-jem /api/recepti/add.
+
+### **Testni scenarij 2: Urejanje obstoječega recepta**
+
+**Kratek opis:**  Preveriti pravilno delovanje funkcionalnosti urejanja že obstoječega recepta.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik v seznamu klikne na gumb ‘Uredi’ pri receptu “Čokoladna torta” |	— | Odpre se obrazec z obstoječimi podatki |
+| 2 |	Uporabnik spremeni opis | “Torta s temno čokolado in malinami” | Novi opis se prikaže v polju |
+| 3 |	Klik na ‘Shrani spremembe’ | — |	Sistem shrani spremembe in prikaže obvestilo “Recept posodobljen” |
+| 4 |	Preverjanje seznama receptov | —	| Posodobljen opis se pravilno prikaže |
+
+**Pogoji uspešnega zaključka:**
+- Sistem uspešno shrani spremembe.
+- Posodobljeni podatki so vidni v seznamu brez osvežitve strani.
+
+**Opombe:** Če spremembe niso vidne, preveri funkcijo updateRecipe() v frontend kodi in povezavo na /api/recepti/update.
+
+### **Testni scenarij 3: Iskanje receptov po imenu**
+
+**Kratek opis:**  Preveriti delovanje iskalne funkcije na seznamu receptov.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik klikne v iskalno polje | — |	Kazalec se postavi v iskalnik |
+| 2 |	Uporabnik vpiše del imena recepta |	“torta” | Sistem filtrira seznam receptov |
+| 3 |	Uporabnik preveri prikazane rezultate | — | Prikazani so samo recepti, ki vsebujejo besedo “torta” |
+| 4 | Uporabnik počisti iskalno polje | — | Prikazani so vsi recepti |
+
+**Pogoji uspešnega zaključka:**
+- Sistem pravilno filtrira rezultate glede na iskani niz.
+- Po čiščenju polja se prikaže celoten seznam.
+
+**Opombe:** Če filtriranje ne deluje, preveri delovanje funkcije handleSearch() in povezavo na /api/recepti/search.
+
+**Povzetek rezultatov**
+|Funkcionalnost |	Status |	Opis |
+|:--|:--|:--|
+| Dodajanje recepta| Uspešno | Recept se shrani in prikaže v seznamu |
+| Urejanje recepta | Uspešno | Spremembe se pravilno shranijo |
+| Iskanje recepta | Uspešno |	Filtriranje deluje po pričakovanjih |
+
+**Zaključek testiranja**
+- Ročno testiranje je pokazalo, da vse ključne funkcionalnosti aplikacije delujejo pravilno in stabilno.
+- Uporabniški vmesnik je odziven in omogoča intuitivno uporabo.
+- Med testiranjem niso bili zaznani kritični hrošči, aplikacija pa ustreza pričakovanim funkcionalnim zahtevam.
 
