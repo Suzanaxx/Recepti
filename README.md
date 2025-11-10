@@ -121,15 +121,180 @@ Spodaj je diagram primerov uporabe za aplikacijo za upravljanje receptov, ki pri
 
 ![classdiagramApp](https://github.com/user-attachments/assets/3fd0607a-f45d-4a11-9cd9-637e1d284569)
 
-## Testiranje
-Projekt vključuje enotne teste za naslednje funkcionalnosti:
-- **Ocenjevanje receptov (rating)**: Preverjanje dodajanja in obravnave napak.
+## **Backend Testiranje**
 
-### Zagon testov
-Za zagon vseh testov uporabite:
+Projekt vključuje **enotne teste** za preverjanje pravilnosti ključnih funkcionalnosti backend sistema.  
+Testi pokrivajo področja, kot so **ocenjevanje receptov**, **komentarji**, **PDF izvoz**, **prehranske vrednosti** in **uporabniška avtentikacija**.
+
+---
+
+### **Poročilo o testiranju**
+
+Projekt vsebuje **5 testnih razredov** in skupaj **17 uspešno izvedenih testov**, ki zagotavljajo stabilnost in pravilnost logike aplikacije.
+
+---
+
+### **1. NutritionCalculatorServiceTest**
+**Namen:** preverjanje izračuna prehranskih vrednosti na porcijo.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testCalculateNutrition` | Sestavine: *Chicken (200 g, 2 kcal/g, 0.1 prot/g)*, *Rice (100 g, 1.3 kcal/g, 0.03 prot/g)*, 2 porciji | Skupne kalorije = **460**, beljakovine = **11.5 g/porcijo**, objekt `summary` ni `null` |
+
+---
+
+### **2. ReceptServiceCommentTest**
+**Namen:** preverjanje dodajanja in pridobivanja komentarjev.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testAddComment_Success` | `receptId = 1`, `userId = 1`, komentar = "Odličen recept!" | Komentar uspešno shranjen, `save()` poklican **1×** |
+| `testAddComment_ReceptNotFound` | `receptId = 1` *(neobstoječ)* | `RuntimeException("Recipe not found")` |
+| `testFindCommentsByReceptId_Success` | `receptId = 1` | Vrnjena **2 komentarja** ("Prvi", "Drugi") |
+| `testFindCommentsByReceptId_NoComments` | `receptId = 1` | **Prazen seznam komentarjev** |
+
+---
+
+### **3. ReceptServiceExportTest**
+**Namen:** preverjanje generiranja PDF datotek iz receptov.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testGeneratePDF_Success` | Recept z imenom, opisom, sestavinami in navodili | PDF datoteka (byte array) vsebuje vse podatke |
+| `testGeneratePDF_EmptyFields` | Recept brez opisa, sestavin in navodil | PDF vsebuje privzeta besedila: *“No description / ingredients / instructions available”* |
+
+---
+
+### **4. ReceptServiceTest**
+**Namen:** preverjanje dodajanja ocen in izračuna prehranskih vrednosti.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testAddOrUpdateRating_Success` | `receptId = 1`, `userId = 1`, `rating = 5` | Shrani `Rating` objekt z oceno **5** |
+| `testAddOrUpdateRating_ReceptNotFound` | Neobstoječ recept | `RuntimeException("Recipe not found")` |
+| `testCalculateNutritionalValuesByIngredients_Success` | Recept `"R001"`, 4 porcij, sestavine z živili | `Map` z: `recipeName`, `servings`, `totalCalories > 0`, `caloriesPerServing > 0` |
+| `testCalculateNutritionalValuesByIngredients_InvalidServings` | `servings = 0` | `RuntimeException("Število porcij mora biti vsaj 1.")` |
+| `testCalculateNutritionalValuesByIngredients_RecipeNotFound` | Neobstoječ recept | `RuntimeException("Recept ni najden.")` |
+
+---
+
+### **5. UserServiceTest**
+**Namen:** preverjanje registracije in prijave uporabnikov.
+
+| Test | Vhodni podatki | Pričakovani izhod |
+|:--|:--|:--|
+| `testRegisterUserSuccess` | `"testuser"`, `"test@example.com"`, `"password"` | Ustvarjen `User` objekt z istim uporabniškim imenom |
+| `testLoginUserSuccess` | `"testuser"`, `"password"` | `Optional<User>` prisoten → uspešna prijava |
+
+---
+
+### **Povzetek testov**
+
+| Skupina testov | Št. testov | Namen |
+|:--|:--:|:--|
+| `NutritionCalculatorServiceTest` | 1 | Izračun prehranskih vrednosti |
+| `ReceptServiceCommentTest` | 4 | Dodajanje in iskanje komentarjev |
+| `ReceptServiceExportTest` | 2 | PDF generiranje receptov |
+| `ReceptServiceTest` | 5 | Ocene in izračuni |
+| `UserServiceTest` | 2 | Registracija in prijava uporabnikov |
+| **Skupaj** | **17** | Vsi testi uspešno izvedeni |
+
+---
+
+### **Zagon testov**
+
+Za zagon vseh testov uporabite ukaz:
+
 ```bash
 mvn test
+```
 
+## **Frontend Testiranje - Testni Scenarij**
 
+- Oznaka: ReceptApp-TEST-Frontend-A5
+- Aplikacija: Upravljanje receptov
+- Verzija aplikacije: 1.0
+- Datum scenarija: 20. 10. 2025
+- Avtor: Mateja Kocbek
+- Referenca: /
+- Zahteve v SZPO: /
 
+**Namen:** Preveriti pravilno delovanje uporabniškega vmesnika aplikacije za upravljanje receptov.
+
+**Scenarij vključuje tri ključne funkcionalnosti:**
+1. Dodajanje novega recepta
+2. Urejanje obstoječega recepta
+3. Iskanje receptov po imenu
+
+**Predpogoji:**
+- Aplikacija je uspešno nameščena in dostopna v brskalniku.
+- Uporabnik ima dostop do obrazca za dodajanje in urejanje receptov.
+- V bazi je shranjen vsaj en recept (“Čokoladna torta”).
+
+### **Testni scenarij 1: Dodajanje novega recepta**
+
+**Kratek opis:** Preveriti, ali uporabnik lahko uspešno doda nov recept prek obrazca in ali se ta pravilno prikaže v seznamu receptov.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik odpre domačo stran aplikacije |	— | Prikaže se obrazec za dodajanje recepta |
+| 2 |	Uporabnik vnese ime recepta |	“Čokoladna torta” | Polje se pravilno izpolni |
+| 3 |	Uporabnik vnese opis | “Sočna torta s čokoladnim prelivom” | Besedilo se shrani v polje |
+| 4 |	Uporabnik vnese sestavine | “Moka, sladkor, jajca, čokolada” |	Seznam se prikaže pravilno |
+| 5 |	Uporabnik vnese navodila |	“Zmešaj sestavine in peci 30 min pri 180°C” | Polje se izpolni |
+| 6 |	Klik na gumb ‘Shrani’ |	— | Sistem shrani recept in prikaže potrditveno sporočilo “Recept uspešno dodan” |
+| 7 |	Preverjanje prikaza novega recepta v seznamu | — |	Novi recept “Čokoladna torta” se prikaže v seznamu |
+
+**Pogoji uspešnega zaključka:**
+- Novi recept se shrani v bazo.
+- Recept se prikaže v seznamu obstoječih receptov brez napak.
+
+**Opombe:** Če sistem ne prikaže potrditvenega sporočila, preveri povezavo med frontendom in backend API-jem /api/recepti/add.
+
+### **Testni scenarij 2: Urejanje obstoječega recepta**
+
+**Kratek opis:**  Preveriti pravilno delovanje funkcionalnosti urejanja že obstoječega recepta.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik v seznamu klikne na gumb ‘Uredi’ pri receptu “Čokoladna torta” |	— | Odpre se obrazec z obstoječimi podatki |
+| 2 |	Uporabnik spremeni opis | “Torta s temno čokolado in malinami” | Novi opis se prikaže v polju |
+| 3 |	Klik na ‘Shrani spremembe’ | — |	Sistem shrani spremembe in prikaže obvestilo “Recept posodobljen” |
+| 4 |	Preverjanje seznama receptov | —	| Posodobljen opis se pravilno prikaže |
+
+**Pogoji uspešnega zaključka:**
+- Sistem uspešno shrani spremembe.
+- Posodobljeni podatki so vidni v seznamu brez osvežitve strani.
+
+**Opombe:** Če spremembe niso vidne, preveri funkcijo updateRecipe() v frontend kodi in povezavo na /api/recepti/update.
+
+### **Testni scenarij 3: Iskanje receptov po imenu**
+
+**Kratek opis:**  Preveriti delovanje iskalne funkcije na seznamu receptov.
+
+| Korak | Opis dejanja uporabnika |	Vhodni podatki | Pričakovani rezultat |
+|:--|:--|:--|:--|
+| 1 |	Uporabnik klikne v iskalno polje | — |	Kazalec se postavi v iskalnik |
+| 2 |	Uporabnik vpiše del imena recepta |	“torta” | Sistem filtrira seznam receptov |
+| 3 |	Uporabnik preveri prikazane rezultate | — | Prikazani so samo recepti, ki vsebujejo besedo “torta” |
+| 4 | Uporabnik počisti iskalno polje | — | Prikazani so vsi recepti |
+
+**Pogoji uspešnega zaključka:**
+- Sistem pravilno filtrira rezultate glede na iskani niz.
+- Po čiščenju polja se prikaže celoten seznam.
+
+**Opombe:** Če filtriranje ne deluje, preveri delovanje funkcije handleSearch() in povezavo na /api/recepti/search.
+
+### Povzetek rezultatov
+
+|Funkcionalnost |	Status |	Opis |
+|:--|:--|:--|
+| Dodajanje recepta| Uspešno | Recept se shrani in prikaže v seznamu |
+| Urejanje recepta | Uspešno | Spremembe se pravilno shranijo |
+| Iskanje recepta | Uspešno |	Filtriranje deluje po pričakovanjih |
+
+**Zaključek testiranja**
+- Ročno testiranje je pokazalo, da vse ključne funkcionalnosti aplikacije delujejo pravilno in stabilno.
+- Uporabniški vmesnik je odziven in omogoča intuitivno uporabo.
+- Med testiranjem niso bili zaznani kritični hrošči, aplikacija pa ustreza pričakovanim funkcionalnim zahtevam.
 
