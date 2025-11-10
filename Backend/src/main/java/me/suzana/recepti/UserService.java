@@ -9,7 +9,7 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
 
     public User registerUser(String username, String email, String password) {
