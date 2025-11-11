@@ -64,33 +64,54 @@
 
         <!-- Forma za dodajanje novega recepta -->
         <div class="container mt-5">
-            <h3 class="mt-5">Add a New Recipe</h3>
+            <h3 class="mt-5">Dodaj / Uredi recept</h3>
             <form id="recept-form">
+                <input type="hidden" id="idje">
+
                 <div class="mb-3">
-                    <label for="idje" class="form-label">Recipe ID</label>
-                    <input type="text" class="form-control" id="idje" required>
-                </div>
-                <div class="mb-3">
-                    <label for="ime" class="form-label">Recipe Name</label>
+                    <label for="ime" class="form-label">Ime recepta</label>
                     <input type="text" class="form-control" id="ime" required>
                 </div>
                 <div class="mb-3">
-                    <label for="opis" class="form-label">Description</label>
+                    <label for="opis" class="form-label">Opis</label>
                     <textarea class="form-control" id="opis" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="sestavine" class="form-label">Ingredients</label>
+                    <label for="sestavine" class="form-label">Sestavine</label>
                     <textarea class="form-control" id="sestavine" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="navodila" class="form-label">Instructions</label>
+                    <label for="navodila" class="form-label">Navodila</label>
                     <textarea class="form-control" id="navodila" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="slika" class="form-label">Image URL</label>
+                    <label for="slika" class="form-label">URL slike</label>
                     <input type="text" class="form-control" id="slika">
                 </div>
-                <button type="button" class="btn btn-primary" id="submit-recept">Submit Recipe</button>
+            
+                <!-- Dodana polja za hranilne vrednosti -->
+                <div class="mb-3">
+                    <label for="kalorije" class="form-label">Kalorije</label>
+                    <input type="number" class="form-control" id="kalorije">
+                </div>
+                <div class="mb-3">
+                    <label for="proteini" class="form-label">Proteini</label>
+                    <input type="number" class="form-control" id="proteini">
+                </div>
+                <div class="mb-3">
+                    <label for="karbohidrati" class="form-label">Karbohidrati</label>
+                    <input type="number" class="form-control" id="karbohidrati">
+                </div>
+                <div class="mb-3">
+                    <label for="mascobe" class="form-label">Maščobe</label>
+                    <input type="number" class="form-control" id="mascobe">
+                </div>
+                <div class="mb-3">
+                    <label for="vlaknine" class="form-label">Vlaknine</label>
+                    <input type="number" class="form-control" id="vlaknine">
+                </div>
+            
+                <button type="submit" class="btn btn-primary">Shrani recept</button>
             </form>
         </div>
     

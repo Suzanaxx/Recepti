@@ -2,334 +2,200 @@ document.addEventListener("DOMContentLoaded", function () {
   const receptForm = document.getElementById("recept-form");
   const receptiContainer = document.getElementById("recepti-container");
   const searchInput = document.getElementById("search-input");
-  let recepti = []; // Shranimo vse recepte tukaj
+  let recepti = [];
 
-  // Funkcija za pridobivanje receptov iz API-ja
+  // 🔹 Pridobi vse recepte
   function fetchRecepti() {
     fetch("http://localhost:8081/api/recepti")
-      .then((response) => response.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Napaka pri pridobivanju receptov");
+        return res.json();
+      })
       .then((data) => {
         recepti = data;
         renderRecepti(recepti);
       })
-      .catch((error) =>
-        console.error("Napaka pri pridobivanju receptov:", error)
-      );
+      .catch((err) => console.error(err));
   }
-  window.prilagodiSestavine = function (recipeId) {
-    const porcijInput = document.getElementById(`porcije-${recipeId}`);
-    const steviloPorcij = parseInt(porcijInput.value);
 
-    if (!steviloPorcij || steviloPorcij < 1) {
-      alert("Vnesite veljavno število porcij (vsaj 1).");
+  // 🔹 Prikaži recepte
+  function renderRecepti(receptiToRender) {
+    receptiContainer.innerHTML = "";
+    if (!receptiToRender || receptiToRender.length === 0) {
+      receptiContainer.innerHTML = `<p class="text-center mt-3">Ni receptov za prikaz.</p>`;
       return;
     }
 
-    const recept = recepti.find((r) => r.id === recipeId);
-    if (!recept) {
-      console.error("Recept ni najden!");
-      return;
-    }
-
-    // Prilagoditev sestavin
-    const prilagojeneSestavine = recept.sestavine
-      .split(",")
-      .map((sestavina) => {
-        // Poskusi razbrati številko in enoto na začetku
-        const [kolicina, ...ostalo] = sestavina.trim().split(" ");
-        const novaKolicina = isNaN(parseFloat(kolicina))
-          ? kolicina
-          : ((parseFloat(kolicina) * steviloPorcij) / 4).toFixed(2);
-        return `${novaKolicina} ${ostalo.join(" ")}`;
-      })
-      .join(", ");
-
-    // Posodobitev prikaza sestavin
-    const sestavineElement = document.getElementById(`sestavine-${recipeId}`);
-    if (sestavineElement) {
-        sestavineElement.innerText = prilagojeneSestavine;
-        sestavineElement.classList.add("sestavine-posodobljene"); // Dodaj poudarek
-        setTimeout(() => sestavineElement.classList.remove("sestavine-posodobljene"), 1500); // Odstrani poudarek po 1.5 sekunde
-    }
-  }
-
-  // Funkcija za prikaz receptov
-function renderRecepti(receptiToRender) {
-  receptiContainer.innerHTML = "";
-  receptiToRender.forEach((recept) => {
+    receptiToRender.forEach((r) => {
       receptiContainer.innerHTML += `
-          <div class="col-md-4 mb-4">
-              <div class="card h-100">
-                  <img src="${recept.slika}" class="card-img-top" alt="Slika recepta">
-                  <div class="card-body">
-                      <h5 class="card-title">${recept.ime}</h5>
-                      <p class="card-text">${recept.opis}</p>
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            <img src="${r.slika || 'https://via.placeholder.com/300x200'}" class="card-img-top" alt="Slika recepta">
+            <div class="card-body">
+              <h5 class="card-title">${r.ime}</h5>
+              <p class="card-text">${r.opis || ''}</p>
 
-                      <h6 class="mt-2">Sestavine:</h6>
-                      <p id="sestavine-${recept.id}" class="sestavine-prikaz">${recept.sestavine}</p>
+              <h6 class="mt-2">Sestavine:</h6>
+              <p id="sestavine-${r.idje}" class="sestavine-prikaz">${r.sestavine || ''}</p>
 
-                      <h6 class="mt-2">Hranilne vrednosti na porcijo:</h6>
-                      <ul class="list-unstyled">
-                          <li><strong>Kalorije:</strong> ${recept.kalorije} kcal</li>
-                          <li><strong>Proteini:</strong> ${recept.proteini} g</li>
-                          <li><strong>Ogljikovi hidrati:</strong> ${recept.karbohidrati} g</li>
-                          <li><strong>Maščobe:</strong> ${recept.mascobe} g</li>
-                          <li><strong>Vlaknine:</strong> ${recept.vlaknine} g</li>
-                      </ul>
+              <h6 class="mt-2">Navodila:</h6>
+              <p>${r.navodila || ''}</p>
 
-                      <h6 class="mt-2">Navodila:</h6>
-                      <p>${recept.navodila}</p>
-
-                      <div class="rating-container" style="max-width: 50%; margin: auto;">
-                          <label for="rating-select">Rate this Recipe:</label>
-                          <select id="rating-select-${recept.id}" class="form-select">
-                              <option value="" selected disabled>Select Rating</option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                          </select>
-                          <button class="btn btn-primary mt-2" onclick="submitRating(${recept.id})">Submit Rating</button>
-                          <div id="rating-feedback-${recept.id}" class="mt-2" style="font-size: 0.9em;"></div>
-                      </div>
-
-                      <!-- Komentarji -->
-                      <h6 class="mt-4">Komentarji:</h6>
-                      <div id="comments-${recept.id}" class="mb-3">
-                          <!-- Komentarji bodo prikazani tukaj -->
-                      </div>
-                      <textarea id="comment-input-${recept.id}" placeholder="Dodaj komentar" class="form-control mb-2"></textarea>
-                      <button class="btn btn-primary" onclick="addComment(${recept.id}, document.getElementById('comment-input-${recept.id}').value)">Dodaj komentar</button>
-                  </div>
-                  
-                  <div class="card-footer">
-                      <button class="btn btn-danger" onclick="deleteRecept('${recept.idje}')">Izbriši</button>
-                      <button class="btn btn-warning" onclick="populateForm('${recept.idje}', '${recept.ime}', '${recept.opis}', '${recept.sestavine}', '${recept.navodila}', '${recept.slika}')">Uredi</button>
-                      <button class="btn btn-success" onclick="exportToPDF('${recept.idje}')">Izvozi PDF</button>
-
-                      <!-- Gumb za prilagoditev števila porcij -->
-                      <div class="d-inline-flex align-items-center mt-2">
-                          <label for="porcije-${recept.id}" class="me-2 mb-0">Porcije:</label>
-                          <input type="number" id="porcije-${recept.id}" value="4" min="1" max="20" step="1" class="form-control w-50 me-2">
-                          <button class="btn btn-primary" onclick="prilagodiSestavine(${recept.id})">Prilagodi</button>
-                      </div>
-                  </div>
+              <div class="d-flex gap-2 flex-wrap mt-3">
+                <button class="btn btn-danger btn-sm" onclick="deleteRecept('${r.idje}')">Izbriši</button>
+                <button class="btn btn-warning btn-sm" onclick="populateForm(
+                  '${r.idje}',
+                  '${escapeQuotes(r.ime)}',
+                  '${escapeQuotes(r.opis)}',
+                  '${escapeQuotes(r.sestavine)}',
+                  '${escapeQuotes(r.navodila)}',
+                  '${escapeQuotes(r.slika)}',
+                  ${r.kalorije || 0},
+                  ${r.proteini || 0},
+                  ${r.karbohidrati || 0},
+                  ${r.mascobe || 0},
+                  ${r.vlaknine || 0}
+                )">Uredi</button>
+                <button class="btn btn-success btn-sm" onclick="exportToPDF('${r.idje}')">Izvozi PDF</button>
               </div>
-          </div>`;
 
-      fetchComments(recept.id); // Pridobi komentarje za vsak recept
-      submitRating(recept.id); // Submit rating for each recipe
-      populateForm(
-          recept.idje,
-          recept.ime,
-          recept.opis,
-          recept.sestavine,
-          recept.navodila,
-          recept.slika
-      ); // Fill form for each recipe
-  });
-}
-
-  // Funkcija za dodajanje novega komentarja
-  function fetchComments(recipeId) {
-    fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`)
-      .then((response) => response.json())
-      .then((comments) => {
-        const commentsContainer = document.getElementById(
-          `comments-${recipeId}`
-        );
-        commentsContainer.innerHTML = comments
-          .map(
-            (comment) => `
-                    <p><strong>Uporabnik ${comment.userId}:</strong> ${comment.comment}</p>
-                `
-          )
-          .join("");
-      })
-      .catch((error) =>
-        console.error("Napaka pri pridobivanju komentarjev:", error)
-      );
+              <div class="d-inline-flex align-items-center mt-3 w-100">
+                <label for="porcije-${r.idje}" class="me-2 mb-0">Porcije:</label>
+                <input type="number" id="porcije-${r.idje}" value="4" min="1" max="20" step="1" class="form-control w-50 me-2">
+                <button class="btn btn-primary btn-sm" onclick="prilagodiSestavine('${r.idje}')">Prilagodi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  function addComment(recipeId, content) {
-    if (!content.trim()) {
-      alert("Comment cannot be empty!");
-      return;
-    }
-
-    const userId = JSON.parse(localStorage.getItem("loggedInUser")).id; // Get logged-in user's ID
-
-    fetch(`http://localhost:8081/api/recepti/${recipeId}/comments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: userId,
-        comment: content,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error adding comment!");
-        }
-        return response.json();
-      })
-      .then(() => {
-        fetchComments(recipeId); // Refresh comments
-        document.getElementById(`comment-input-${recipeId}`).value = ""; // Clear input field
-      })
-      .catch((error) => console.error("Error adding comment:", error));
+  // 🔹 Escape vrednosti za JS
+  function escapeQuotes(text) {
+    return text ? text.replace(/'/g, "\\'").replace(/"/g, "&quot;") : "";
   }
 
-  // Dodaj funkcijo v globalni obseg
-  window.addComment = addComment;
-
-  // Funkcija za brisanje recepta
-  window.deleteRecept = function (idje) {
-    fetch(`http://localhost:8081/api/recepti/${idje}`, { method: "DELETE" })
-      .then(() => fetchRecepti())
-      .catch((error) => console.error("Napaka pri brisanju recepta:", error));
-  };
-  window.submitRating = function (recipeId) {
-    const ratingSelect = document.getElementById(`rating-select-${recipeId}`);
-    const feedbackDiv = document.getElementById(`rating-feedback-${recipeId}`);
-    const rating = ratingSelect.value;
-
-    if (!rating) {
-      feedbackDiv.innerText = "Please select a rating!";
-      feedbackDiv.style.color = "red";
-      return;
-    }
-
-    // Retrieve the logged-in user's data from localStorage
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
-    if (!loggedInUser || !loggedInUser.id) {
-      feedbackDiv.innerText = "User not logged in!";
-      feedbackDiv.style.color = "red";
-      return;
-    }
-
-    const userId = loggedInUser.id; // Use the correct user ID from the logged-in user
-
-    // Debugging: Log the values being sent
-    console.log(
-      `Submitting rating for recipeId: ${recipeId}, userId: ${userId}, rating: ${rating}`
-    );
-
-    fetch(`http://localhost:8081/api/recepti/${recipeId}/ratings`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, rating }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          console.error(`Failed to submit rating. Status: ${response.status}`);
-          throw new Error("Failed to submit rating");
-        }
-        return response.text();
-      })
-      .then((message) => {
-        console.log(`Server Response: ${message}`);
-        feedbackDiv.innerText = "Rating submitted successfully!";
-        feedbackDiv.style.color = "green";
-      })
-      .catch((error) => {
-        feedbackDiv.innerText = "Error submitting rating. Please try again.";
-        feedbackDiv.style.color = "red";
-        console.error("Error submitting rating:", error);
-      });
-  };
-
-  // Funkcija za izvoz recepta v PDF
-  window.exportToPDF = function (idje) {
-    const recept = recepti.find((r) => r.idje === idje); // Find the specific recipe
-    if (!recept) {
-      console.error("Recept ni najden!");
-      return;
-    }
-
-    // Use jsPDF to generate the PDF
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const marginLeft = 20;
-    const lineHeight = 10;
-    let yPosition = 20;
-
-    // Add Recipe Title
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.text("Recept: " + recept.ime, marginLeft, yPosition);
-
-    yPosition += lineHeight + 10;
-
-    // Add Description
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(14);
-    doc.text("Opis:", marginLeft, yPosition);
-    yPosition += lineHeight;
-    doc.text(recept.opis || "Ni opisa na voljo", marginLeft, yPosition, {
-      maxWidth: 170,
-    });
-
-    yPosition += lineHeight * 2;
-
-    // Add Ingredients (Sestavine in rows)
-    doc.setFont("helvetica", "bold");
-    doc.text("Sestavine:", marginLeft, yPosition);
-    yPosition += lineHeight;
-    doc.setFont("helvetica", "normal");
-    const ingredients = recept.sestavine
-      ? recept.sestavine.split("\n")
-      : ["Ni sestavin na voljo"];
-    ingredients.forEach((ingredient) => {
-      doc.text("- " + ingredient.trim(), marginLeft, yPosition);
-      yPosition += lineHeight;
-    });
-
-    yPosition += lineHeight;
-
-    // Add Instructions
-    doc.setFont("helvetica", "bold");
-    doc.text("Navodila:", marginLeft, yPosition);
-    yPosition += lineHeight;
-    doc.setFont("helvetica", "normal");
-    doc.text(recept.navodila || "Ni navodil na voljo", marginLeft, yPosition, {
-      maxWidth: 170,
-    });
-
-    yPosition += lineHeight * 3;
-
-    // Add Image (if available)
-    if (recept.slika) {
-      const img = new Image();
-      img.src = recept.slika;
-      img.onload = function () {
-        const imgWidth = 80;
-        const imgHeight = 80;
-        doc.addImage(img, "JPEG", marginLeft, yPosition, imgWidth, imgHeight);
-        doc.save(recept.ime + ".pdf");
-      };
-    } else {
-      doc.save(recept.ime + ".pdf");
-    }
-  };
-
-  // Funkcija za urejanje recepta (polni formo)
-  window.populateForm = function (idje, ime, opis, sestavine, navodila, slika) {
+  // 🔹 Napolni obrazec za urejanje
+  window.populateForm = function (idje, ime, opis, sestavine, navodila, slika, kalorije=0, proteini=0, karbohidrati=0, mascobe=0, vlaknine=0) {
     document.getElementById("idje").value = idje;
     document.getElementById("ime").value = ime;
     document.getElementById("opis").value = opis;
     document.getElementById("sestavine").value = sestavine;
     document.getElementById("navodila").value = navodila;
     document.getElementById("slika").value = slika;
+    document.getElementById("kalorije").value = kalorije;
+    document.getElementById("proteini").value = proteini;
+    document.getElementById("karbohidrati").value = karbohidrati;
+    document.getElementById("mascobe").value = mascobe;
+    document.getElementById("vlaknine").value = vlaknine;
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Inicializacija
+  // 🔹 Dodaj ali posodobi recept
+  receptForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const idje = document.getElementById("idje").value.trim();
+    const ime = document.getElementById("ime").value.trim();
+    const opis = document.getElementById("opis").value.trim();
+    const sestavine = document.getElementById("sestavine").value.trim();
+    const navodila = document.getElementById("navodila").value.trim();
+    const slika = document.getElementById("slika").value.trim();
+    const kalorije = parseInt(document.getElementById("kalorije").value) || 0;
+    const proteini = parseFloat(document.getElementById("proteini").value) || 0;
+    const karbohidrati = parseFloat(document.getElementById("karbohidrati").value) || 0;
+    const mascobe = parseFloat(document.getElementById("mascobe").value) || 0;
+    const vlaknine = parseFloat(document.getElementById("vlaknine").value) || 0;
+
+    if (!ime || !opis || !sestavine || !navodila) {
+      alert("Prosim, izpolnite vsa polja!");
+      return;
+    }
+
+    const recept = { ime, opis, sestavine, navodila, slika, kalorije, proteini, karbohidrati, mascobe, vlaknine };
+
+    const method = idje ? "PUT" : "POST";
+    const url = idje
+      ? `http://localhost:8081/api/recepti/${idje}`
+      : "http://localhost:8081/api/recepti";
+
+    fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(recept),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error("Napaka pri shranjevanju recepta: " + text);
+        }
+        receptForm.reset();
+        document.getElementById("idje").value = "";
+        fetchRecepti();
+      })
+      .catch((err) => console.error(err));
+  });
+
+  // 🔹 Prilagodi sestavine glede na porcijo
+  window.prilagodiSestavine = function (idje) {
+    const porcijInput = document.getElementById(`porcije-${idje}`);
+    const steviloPorcij = parseInt(porcijInput.value);
+    if (!steviloPorcij || steviloPorcij < 1) return;
+
+    const recept = recepti.find(r => r.idje === idje);
+    if (!recept) return;
+
+    const prilagojeneSestavine = recept.sestavine.split(",").map(s => {
+      const [kolicina, ...ostalo] = s.trim().split(" ");
+      const novaKolicina = isNaN(parseFloat(kolicina)) ? kolicina : ((parseFloat(kolicina)*steviloPorcij)/4).toFixed(2);
+      return `${novaKolicina} ${ostalo.join(" ")}`;
+    }).join(", ");
+
+    const elem = document.getElementById(`sestavine-${idje}`);
+    if (elem) {
+      elem.innerText = prilagojeneSestavine;
+      elem.classList.add("sestavine-posodobljene");
+      setTimeout(()=>elem.classList.remove("sestavine-posodobljene"), 1500);
+    }
+  };
+
+  // 🔹 Izbriši recept
+  window.deleteRecept = function(idje) {
+    if (!confirm("Ali res želite izbrisati ta recept?")) return;
+
+    fetch(`http://localhost:8081/api/recepti/${idje}`, { method: "DELETE" })
+      .then(res => { if(!res.ok) throw new Error("Napaka pri brisanju"); fetchRecepti(); })
+      .catch(err => console.error(err));
+  };
+
+  // 🔹 Izvozi PDF
+  window.exportToPDF = function(idje) {
+    const recept = recepti.find(r => r.idje === idje);
+    if (!recept) return;
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(22);
+    doc.text("Recept: "+recept.ime,20,20);
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(14);
+    doc.text("Opis:",20,35);
+    doc.text(recept.opis || "",20,43);
+    doc.text("Sestavine:",20,60);
+    doc.text(recept.sestavine || "",20,68,{maxWidth:170});
+    doc.text("Navodila:",20,95);
+    doc.text(recept.navodila || "",20,103,{maxWidth:170});
+    doc.save(`${recept.ime}.pdf`);
+  };
+
+  // 🔹 Iskanje
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.toLowerCase();
+    renderRecepti(recepti.filter(r => r.ime.toLowerCase().includes(q)));
+  });
+
+  // 🔹 Inicializacija
   fetchRecepti();
 });
