@@ -298,3 +298,26 @@ mvn test
 - Uporabniški vmesnik je odziven in omogoča intuitivno uporabo.
 - Med testiranjem niso bili zaznani kritični hrošči, aplikacija pa ustreza pričakovanim funkcionalnim zahtevam.
 
+# Analiza kakovosti kode – SkupinskiProjekt Backend
+
+To poročilo povzema metrike in analizo kakovosti kode, ki je bil pridobljen iz orodja za metrike kode (LOC, CBO, WMC, RFC, fan-in/fan-out, kompleksnost metod).
+
+## 1. Povzetek razredov
+
+| Razred                       | Kompleksnost | Opis                                                                                                          |
+| ---------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------- |
+| `Rating`                     | Nizka        | Getterji/setterji, nizka kompleksnost. JavaDoc manjka.                                                        |
+| `ReceptService`              | Visoka       | Dolge metode za CRUD, dodajanje ocen, generiranje PDF, izračune prehrane. Nekatere metode >100 LOC in WMC>10. |
+| `NutritionCalculatorService` | Srednja      | Metoda `calculateNutrition` srednje kompleksna, razred `Ingredient` enostaven.                                |
+| `ReceptController`           | Srednja      | Metode CRUD operacij, nekatere dolge metode kličejo kompleksne Service metode.                                |
+| Testni razredi               | Srednja      | LOC 21–101, WMC 1–16, sprejemljivo. Priporočeno dodati komentarje/JavaDoc za jasnost.                         |
+
+## 2. Problematične metode
+
+| Razred             | Metoda                                    | LOC | WMC | CBO | Opomba                                                      |
+| ------------------ | ----------------------------------------- | --- | --- | --- | ----------------------------------------------------------- |
+| `ReceptService`    | `addOrUpdateRating`                       | 113 | 10  | 4   | Dolga in kompleksna metoda                                  |
+| `ReceptService`    | `generatePDF`                             | 133 | 16  | 5   | Visoka kompleksnost, več primerjav in operacij              |
+| `ReceptService`    | `calculateNutritionalValuesByIngredients` | 182 | 8   | 2   | Veliko primerjav in matematičnih operacij                   |
+| `ReceptController` | `calculateNutritionalValuesByIngredients` | 135 | 6   | 2   | Controller vsebuje kompleksno logiko, predlagan refaktoring |
+
