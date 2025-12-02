@@ -321,3 +321,41 @@ To poročilo povzema metrike in analizo kakovosti kode, ki je bil pridobljen iz 
 | `ReceptService`    | `calculateNutritionalValuesByIngredients` | 182 | 8   | 2   | Veliko primerjav in matematičnih operacij                   |
 | `ReceptController` | `calculateNutritionalValuesByIngredients` | 135 | 6   | 2   | Controller vsebuje kompleksno logiko, predlagan refaktoring |
 
+## 3. Rezultati analize metrik
+
+| **Metrika**                            | **Kaj meri**                                    | **Kaj pomenijo rezultati v projektu**                                                                       |
+| -------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **LOC (Lines of Code)**                | Število vrstic kode v razredu ali metodi        | Večina razredov ima nizko do srednjo velikost; nekaj metod presega **100+ LOC** in potrebuje refaktoring.   |
+| **WMC (Weighted Methods per Class)**   | Seštevek kompleksnosti vseh metod v razredu     | Veliko razredov ima nizek WMC (enostavni razredi); `ReceptService` ima **visok WMC → preveč odgovornosti**. |
+| **CC / CYCLO (Cyclomatic Complexity)** | Število možnih poti skozi metodo                | Večina metod ima nizko kompleksnost; nekaj izstopajočih (10–16 CC) zahteva razbitje na manjše module.       |
+| **CBO (Coupling Between Objects)**     | Odvisnost razreda od drugih razredov            | V večini primerov nizka do zmerna; nekaj razredov ima višji CBO → bolj prepleteni in težje testljivi.       |
+| **RFC (Response For Class)**           | Koliko metod se lahko izvede ob klicu razreda   | Srednje vrednosti povsod; `ReceptService` ima **višji RFC**, kar kaže na veliko logike v enem razredu.      |
+| **LCOM (Lack of Cohesion of Methods)** | Kako dobro so metode razreda povezane           | Večinoma dobra kohezija; nekaj razredov z višjim LCOM predlagamo razdeliti.                                 |
+| **Fan-in**                             | Kolikokrat se metoda kliče iz drugih delov kode | Nizke vrednosti → redko uporabljene metode; visoke → kritične metode, ki morajo biti stabilne.              |
+| **Fan-out**                            | Koliko drugih metod razred/metoda kliče         | Pri večini nizko; v kompleksnih metodah visoko → visoka odvisnost in kompleksnost.                          |
+| **DIT (Depth of Inheritance Tree)**    | Globina dedovanja                               | Skoraj vse vrednosti nizke → malo dedovanja, kar izboljša razumljivost.                                     |
+| **NOC (Number of Children)**           | Koliko razredov deduje od danega razreda        | Malo ali nič → enostavna arhitektura brez pretiranega dedovanja.                                            |
+
+| **Področje**                     | **Ocena**        | **Opis**                                            |
+| -------------------------------- | ---------------- | --------------------------------------------------- |
+| **Struktura razredov**           | dobra          | Večina razredov je majhnih in enostavnih.           |
+| **Kompleksnost metod**           | srednja        | Nekaj metod močno presega priporočeno kompleksnost. |
+| **Odvisnosti (CBO)**             | zmerne         | Le nekaj razredov ima visoke odvisnosti.            |
+| **Kohezija (LCOM)**              | večinoma dobra | Le posamezni razredi imajo nižjo kohezijo.          |
+| **Najbolj problematične metode** | problem        | Metode v `ReceptService` (PDF, rating, izračuni).   |
+
+## 4. Top 10 najbolj problematičnih metod
+
+| #      | Razred                       | Metoda                                    | LOC | WMC / CC | Opis težave                                                                                                    |
+| ------ | ---------------------------- | ----------------------------------------- | --- | -------- | -------------------------------------------------------------------------------------------------------------- |
+| **1**  | `ReceptService`              | `calculateNutritionalValuesByIngredients` | 182 | 16       | Zelo dolga metoda, veliko matematičnih operacij, primerjav, mapiranja. Potrebno razbitje na 4–6 manjših metod. |
+| **2**  | `ReceptService`              | `generatePDF`                             | 133 | 16       | Preveč logike v eni metodi (PDF layout, datoteke, formatiranje). Predlagano izločiti PDF builder.              |
+| **3**  | `ReceptService`              | `addOrUpdateRating`                       | 113 | 10       | Več pogojev in notranje logike; vključuje branje, preverjanje in shranjevanje ocen.                            |
+| **4**  | `ReceptController`           | `calculateNutritionalValuesByIngredients` | 135 | 6        | Controller vsebuje poslovno logiko → potrebno premakniti v Service.                                            |
+| **5**  | `NutritionCalculatorService` | `calculateNutrition`                      | 79  | 7        | Srednja matematična kompleksnost, več pogojnih struktur if/switch.                                             |
+| **6**  | `ReceptService`              | `getAllReceptsWithNutrition`              | 58  | 5        | Iteracije, izračuni in mapiranje seznamov — visok fan-out.                                                     |
+| **7**  | `ReceptController`           | `addRating`                               | 52  | 5        | Veliko preverjanja vstopnih podatkov; primeren kandidat za refaktoring.                                        |
+| **8**  | `ReceptService`              | `updateRecept`                            | 47  | 5        | Več različnih izračunov in preverjanj, nekoliko gneče v eni metodi.                                            |
+| **9**  | `ReceptService`              | `mapRequestToRecept`                      | 41  | 4        | Metoda dela preveč nalog hkrati – priprava podatkov, validacija, mapiranje.                                    |
+| **10** | `ReceptService`              | `searchRecepts`                           | 38  | 4        | Veliko filtriranja, normalizacije in primerjav, primeren za optimizacijo.                                      |
+
